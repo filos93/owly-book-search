@@ -219,7 +219,7 @@ async function generateCertificate(milestone, count, books) {
   if (books.length === 0) {
     doc.text('• No books completed yet.', 35, yPosition);
   } else {
-    const displayList = books.slice(0, 6);
+    const displayList = books.slice(0, 10); // Show up to 10 books for brevity
     displayList.forEach((book, index) => {
       const title = book.title || 'Untitled Book';
       const authors = typeof book.authors === 'string' ? book.authors : 'Unknown Author';
@@ -227,8 +227,8 @@ async function generateCertificate(milestone, count, books) {
       yPosition += 6;
     });
 
-    if (books.length > 6) {
-      doc.text(`...and ${books.length - 6} more completed books.`, 35, yPosition + 1);
+    if (books.length > 10) {
+      doc.text(`...and ${books.length - 10} more completed books.`, 35, yPosition + 1);
     }
   }
 

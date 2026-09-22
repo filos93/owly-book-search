@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. VARIABLES & RESET
+   ========================================================================== */
 :root {
   --primary-color: #31a2b8;
   --primary-hover: #268597;
@@ -5,6 +8,28 @@
   --card-bg: rgba(255, 255, 255, 0.95);
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+
+  /* Set background image */
+  background-image: url('/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   2. HEADER & NAVIGATION
+   ========================================================================== */
 .app-header {
   background-color: var(--primary-color);
   padding: 1rem 2rem;
@@ -12,6 +37,18 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav-links {
@@ -32,6 +69,19 @@
 .nav-links a:hover,
 .nav-links a.active {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   3. LAYOUT & LANDING SECTIONS
+   ========================================================================== */
+.container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
 }
 
 .hero-section {
@@ -70,56 +120,9 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--text-dark);
-
-  /* Set background image */
-  background-image: url('/bg.jpg');
-  background-repeat: no-repeat;
-  
-  /* Setting background-size to 100% fits 1 full tile across the viewport, preventing side-by-side seams */
-  background-size: 100% auto;
-  background-position: center top;
-  background-attachment: fixed;
-}
-
-/* Header Styling */
-.app-header {
-  color: black;
-  background-color: var(--primary-color);
-  padding: 1rem 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.logo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.app-logo {
-  height: 60px; /* Adjust size as needed */
-  width: auto;
-  object-fit: contain;
-}
-
-/* Main Container Card (Fixes readability over pattern) */
-.container {
-  max-width: 800px;
-  margin: 3rem auto;
-  padding: 2.5rem;
-  background-color: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(4px); /* Adds a subtle glassmorphism effect */
-}
-
-/* Search Section */
+/* ==========================================================================
+   4. SEARCH SECTION & CATEGORY LEGEND
+   ========================================================================== */
 .search-section h2 {
   margin-top: 0;
   text-align: center;
@@ -169,15 +172,68 @@ body {
   transform: scale(0.98);
 }
 
-/* Status Message */
-.status-message {
-  text-align: center;
+.category-legend-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
   margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.category-legend-card h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  color: #1e293b;
+  text-align: left;
+}
+
+.legend-help-text {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 4px;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chip-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip-btn:hover {
+  background: #31a2b8;
+  color: #ffffff;
+  border-color: #31a2b8;
+}
+
+.status-message {
+  text-align: left;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
   font-weight: 500;
   color: #64748b;
 }
 
-/* Book Results List */
+/* ==========================================================================
+   5. BOOK RESULTS & ACTION BUTTONS
+   ========================================================================== */
 .books-list {
   list-style: none;
   padding: 0;
@@ -206,10 +262,21 @@ body {
   color: var(--text-dark);
 }
 
+.book-title.read-title {
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
 .book-authors {
   color: #64748b;
   font-size: 0.9rem;
   margin-top: 4px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .details-btn {
@@ -225,96 +292,6 @@ body {
 
 .details-btn:hover {
   background-color: #e2e8f0;
-}
-
-/* Modal Styling */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 12px;
-  max-width: 550px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 28px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #94a3b8;
-}
-
-.close-btn:hover {
-  color: var(--text-dark);
-}
-
-.card-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.load-more-container {
-  display: flex;
-  justify-content: center;
-  margin-top: -25px; /* Pulls the button up closer to the list */
-  margin-bottom: 40px;
-}
-
-/* Button appearance */
-#load-more-btn {
-  background-color: var(--primary-color, #31a2b8);
-  color: #ffffff;
-  border: none;
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 25px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-}
-
-/* Hover and Focus States */
-#load-more-btn:hover {
-  background-color: #268193; /* Darker teal */
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-}
-
-/* Disabled/Loading State */
-#load-more-btn:disabled {
-  background-color: #cbd5e1;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Helper class to hide the button when no more results exist */
-.hidden {
-  display: none !important;
 }
 
 .save-btn {
@@ -356,7 +333,61 @@ body {
   background-color: #fca5a5;
 }
 
-/* Roadmap Container */
+.read-btn {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.read-btn:hover {
+  background-color: #16a34a;
+}
+
+.read-btn.completed {
+  background-color: #0f766e;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 40px;
+}
+
+#load-more-btn {
+  background-color: var(--primary-color, #31a2b8);
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+#load-more-btn:hover {
+  background-color: #268193;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+#load-more-btn:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   6. ROADMAP & MILESTONES
+   ========================================================================== */
 .milestones-list {
   list-style: none;
   padding: 0;
@@ -376,14 +407,12 @@ body {
   transition: all 0.2s ease;
 }
 
-/* Unlocked Level Style */
 .milestone-card.unlocked {
   background: #ffffff;
   border-left: 5px solid #31a2b8;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Locked Level Style */
 .milestone-card.locked {
   opacity: 0.6;
   background: #f1f5f9;
@@ -411,26 +440,47 @@ body {
   color: #31a2b8;
 }
 
-.read-btn {
-  background-color: #22c55e;
-  color: white;
+/* ==========================================================================
+   7. MODAL STYLING
+   ========================================================================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  max-width: 550px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  background: none;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  color: #94a3b8;
 }
 
-.read-btn:hover {
-  background-color: #16a34a;
-}
-
-.read-btn.completed {
-  background-color: #0f766e;
-}
-
-.read-title {
-  text-decoration: line-through;
-  opacity: 0.8;
+.close-btn:hover {
+  color: var(--text-dark);
 }

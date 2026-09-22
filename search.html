@@ -22,23 +22,50 @@
   </header>
 
   <main class="container">
+    <!-- Search Section Card -->
     <section class="search-section">
       <h2>Search Books by Category</h2>
+      
       <div class="search-box">
         <input 
           type="text" 
           id="category-input" 
           placeholder="Enter category (e.g. fantasy, science, history)..." 
           aria-label="Book category"
+          autocomplete="off"
         />
-        <button id="search-btn">Search</button>
+        <button id="search-btn" class="btn primary-btn">Search</button>
+      </div>
+
+      <!-- Category Search Legend Card (Nested Inside) -->
+      <div class="category-legend-card">
+        <h3>🏷️ Explore Popular Categories</h3>
+        <p class="legend-help-text">Click a category tag or type a topic above to search Open Library subject indices.</p>
+        
+        <div class="category-chips">
+          <button type="button" class="chip-btn" data-category="fiction">📖 Fiction</button>
+          <button type="button" class="chip-btn" data-category="science_fiction">🚀 Sci-Fi</button>
+          <button type="button" class="chip-btn" data-category="fantasy">🧙 Fantasy</button>
+          <button type="button" class="chip-btn" data-category="history">🏛️ History</button>
+          <button type="button" class="chip-btn" data-category="biography">👤 Biography</button>
+          <button type="button" class="chip-btn" data-category="science">🔬 Science</button>
+          <button type="button" class="chip-btn" data-category="art">🎨 Art</button>
+          <button type="button" class="chip-btn" data-category="cooking">🍳 Cooking</button>
+        </div>
       </div>
     </section>
 
-    <section id="status-message" class="status-message"></section>
+    <!-- Status & Loading message displayed inside the card -->
+    <div id="status-message" class="status-message"></div>
 
+    <!-- Results Grid -->
     <section class="results-section">
-      <ul id="books-list" class="books-list"></ul>
+      <div id="books-list" class="books-grid"></div>
+      
+      <!-- Load More Button -->
+      <div class="load-more-container" style="text-align: center; margin-top: 2rem;">
+        <button id="load-more-btn" class="cta-button hidden">Load More Books</button>
+      </div>
     </section>
 
     <!-- Details Modal -->
@@ -52,15 +79,6 @@
       </div>
     </div>
   </main>
-
-  <section class="results-section">
-  <ul id="books-list" class="books-list"></ul>
-  
-  <!-- Load More Container -->
-  <div class="load-more-container" style="text-align: center; margin-top: 2rem;">
-    <button id="load-more-btn" class="cta-button hidden">Load More Books</button>
-  </div>
-  </section>
 
   <script type="module" src="/src/js/search.js"></script>
 </body>

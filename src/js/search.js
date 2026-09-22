@@ -16,12 +16,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadMoreBtn = document.getElementById('load-more-btn');
   const closeModalBtn = document.getElementById('close-modal');
   const modal = document.getElementById('details-modal');
+  const chipButtons = document.querySelectorAll('.chip-btn');
 
   // Pagination state
   const LIMIT = 30;
   let currentOffset = 0;
   let currentCategory = '';
   let totalLoaded = 0;
+
+  // 1. Chip Legend Integration
+  chipButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const selectedCategory = button.getAttribute('data-category');
+      if (!selectedCategory) return;
+
+      if (categoryInput) {
+        // Strip emojis to populate input field with clean text (e.g. "📖 Fiction" -> "Fiction")
+        const cleanLabel = button.textContent.replace(/^[^\w\s]+/, '').trim();
+        categoryInput.value = cleanLabel;
+      }
+
+      // Triggers handleSearch(), using status text inside the card
+      handleSearch();
+    });
+  });
 
   if (searchBtn) {
     searchBtn.addEventListener('click', handleSearch);
@@ -70,6 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderBooksList([], null, false);
     toggleLoadMoreButton(false);
+
+    // Status text displays inside the category card
     setStatusMessage(`Searching for "${category}" books, please wait...`);
 
     try {
@@ -84,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setStatusMessage(`Showing ${totalLoaded} books in "${category}":`);
       renderBooksList(books, handleViewDetails, false);
 
-      // Show Load More button if we received a full page of 30 results
       toggleLoadMoreButton(books.length === LIMIT);
     } catch (error) {
       console.error('Search failed:', error);
@@ -111,10 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
       totalLoaded += newBooks.length;
       setStatusMessage(`Showing ${totalLoaded} books in "${currentCategory}":`);
       
-      // Append new items to existing list
+      // Append new items to existing grid
       renderBooksList(newBooks, handleViewDetails, true);
 
-      // Hide Load More button if fewer than 30 books were returned
       toggleLoadMoreButton(newBooks.length === LIMIT);
     } catch (error) {
       console.error('Load more failed:', error);
@@ -122,6 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /**
+   * Modal Description Handler
+   */
   async function handleViewDetails(workKey, title, authors) {
     setStatusMessage('Fetching book description...');
 

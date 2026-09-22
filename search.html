@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owly - Book Search App</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="./src/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-container">
+      <img src="/logo.png" alt="Owly Logo" class="app-logo" />
+      <p class="app-tagline">Owly - Book Search App</p>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="search.html" class="nav-link active">Library Search</a>
+      <a href="wishlist.html" id="wishlist-nav-link" class="nav-link">Saved Books</a>
+      <a href="levels.html" class="nav-link">Book Journey</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="search-section">
+      <h2>Search Books by Category</h2>
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="category-input" 
+          placeholder="Enter category (e.g. fantasy, science, history)..." 
+          aria-label="Book category"
+        />
+        <button id="search-btn">Search</button>
+      </div>
+    </section>
+
+    <section id="status-message" class="status-message"></section>
+
+    <section class="results-section">
+      <ul id="books-list" class="books-list"></ul>
+    </section>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="modal hidden">
+      <div class="modal-content">
+        <button id="close-modal" class="close-btn">&times;</button>
+        <h3 id="modal-title"></h3>
+        <p id="modal-authors" class="authors"></p>
+        <hr />
+        <p id="modal-description" class="description"></p>
+      </div>
+    </div>
+  </main>
+
+  <section class="results-section">
+  <ul id="books-list" class="books-list"></ul>
+  
+  <!-- Load More Container -->
+  <div class="load-more-container" style="text-align: center; margin-top: 2rem;">
+    <button id="load-more-btn" class="cta-button hidden">Load More Books</button>
+  </div>
+  </section>
+
+  <script type="module" src="/src/js/search.js"></script>
+</body>
+</html>

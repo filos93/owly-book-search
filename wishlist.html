@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owly - Book Search App</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="./src/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-container">
+      <img src="/logo.png" alt="Owly Logo" class="app-logo" />
+      <p class="app-tagline">Owly - Book Search App</p>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="search.html" class="nav-link">Library Search</a>
+      <a href="wishlist.html" id="wishlist-nav-link" class="nav-link active">Saved Books</a>
+      <a href="levels.html" class="nav-link">Book Journey</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="search-section">
+      <h2>⭐ Saved Books & Resources</h2>
+      <p style="text-align: center; color: #64748b;">Manage your saved reading lists and educational materials.</p>
+    </section>
+
+    <section id="status-message" class="status-message"></section>
+
+    <section class="results-section">
+      <ul id="wishlist-container" class="books-list"></ul>
+    </section>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="modal hidden">
+      <div class="modal-content">
+        <button id="close-modal" class="close-btn">&times;</button>
+        <h3 id="modal-title"></h3>
+        <p id="modal-authors" class="authors"></p>
+        <hr />
+        <p id="modal-description" class="description"></p>
+      </div>
+    </div>
+
+  </main>
+
+
+  <div class="wishlist-actions" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
+    <button id="export-btn" class="cta-button">Export Wishlist (.json)</button>
+      
+    <label for="import-file" class="cta-button" style="cursor: pointer; background-color: #64748b;">
+        Import Wishlist (.json)
+    </label>
+    <input type="file" id="import-file" accept=".json" style="display: none;" />
+  </div>
+
+  <ul id="wishlist-container" class="books-list"></ul>
+
+
+  <script type="module" src="/src/js/wishlist.js"></script>
+</body>
+</html>

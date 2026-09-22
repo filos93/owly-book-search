@@ -1,0 +1,436 @@
+:root {
+  --primary-color: #31a2b8;
+  --primary-hover: #268597;
+  --text-dark: #2c3e50;
+  --card-bg: rgba(255, 255, 255, 0.95);
+}
+
+.app-header {
+  background-color: var(--primary-color);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+
+  /* Set background image */
+  background-image: url('/bg.jpg');
+  background-repeat: no-repeat;
+  
+  /* Setting background-size to 100% fits 1 full tile across the viewport, preventing side-by-side seams */
+  background-size: 100% auto;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+/* Header Styling */
+.app-header {
+  color: black;
+  background-color: var(--primary-color);
+  padding: 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-logo {
+  height: 60px; /* Adjust size as needed */
+  width: auto;
+  object-fit: contain;
+}
+
+/* Main Container Card (Fixes readability over pattern) */
+.container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px); /* Adds a subtle glassmorphism effect */
+}
+
+/* Search Section */
+.search-section h2 {
+  margin-top: 0;
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.search-box {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 14px 20px;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 30px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(49, 162, 184, 0.2);
+}
+
+.search-box button {
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.search-box button:hover {
+  background-color: var(--primary-hover);
+}
+
+.search-box button:active {
+  transform: scale(0.98);
+}
+
+/* Status Message */
+.status-message {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* Book Results List */
+.books-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.book-card {
+  background: white;
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.book-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+.book-authors {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.details-btn {
+  background-color: #f1f5f9;
+  color: var(--text-dark);
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.details-btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Modal Styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  max-width: 550px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+.close-btn:hover {
+  color: var(--text-dark);
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: -25px; /* Pulls the button up closer to the list */
+  margin-bottom: 40px;
+}
+
+/* Button appearance */
+#load-more-btn {
+  background-color: var(--primary-color, #31a2b8);
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover and Focus States */
+#load-more-btn:hover {
+  background-color: #268193; /* Darker teal */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Disabled/Loading State */
+#load-more-btn:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Helper class to hide the button when no more results exist */
+.hidden {
+  display: none !important;
+}
+
+.save-btn {
+  background-color: #fff;
+  border: 1px solid #f59e0b;
+  color: #d97706;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-btn.saved {
+  background-color: #f59e0b;
+  color: #fff;
+}
+
+.save-btn:hover {
+  background-color: #fef3c7;
+}
+
+.save-btn.saved:hover {
+  background-color: #d97706;
+}
+
+.remove-btn {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.remove-btn:hover {
+  background-color: #fca5a5;
+}
+
+/* Roadmap Container */
+.milestones-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.milestone-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+/* Unlocked Level Style */
+.milestone-card.unlocked {
+  background: #ffffff;
+  border-left: 5px solid #31a2b8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Locked Level Style */
+.milestone-card.locked {
+  opacity: 0.6;
+  background: #f1f5f9;
+}
+
+.milestone-icon {
+  font-size: 2rem;
+}
+
+.milestone-details h4 {
+  margin: 0 0 4px 0;
+  color: #1e293b;
+}
+
+.milestone-details p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.milestone-status {
+  margin-left: auto;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #31a2b8;
+}
+
+.read-btn {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.read-btn:hover {
+  background-color: #16a34a;
+}
+
+.read-btn.completed {
+  background-color: #0f766e;
+}
+
+.read-title {
+  text-decoration: line-through;
+  opacity: 0.8;
+}

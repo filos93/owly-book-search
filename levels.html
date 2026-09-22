@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owly - Book Search App</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="./src/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-container">
+      <img src="/logo.png" alt="Owly Logo" class="app-logo" />
+      <p class="app-tagline">Owly - Book Search App</p>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="search.html" class="nav-link">Library Search</a>
+      <a href="wishlist.html" id="wishlist-nav-link" class="nav-link">Saved Books</a>
+      <a href="levels.html" class="nav-link active">Book Journey</a>
+    </nav>
+  </header>
+
+  <main class="container">
+      <div class="level-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <span id="current-badge" style="font-size: 2.5rem;">🥚</span>
+            <div>
+            <h2 id="current-level-title" style="margin: 0;">Fledgling Reader (Level 1)</h2>
+            <p id="total-read-count" style="margin: 4px 0 0 0; color: #64748b;">0 Books Completed</p>
+            </div>
+        </div>
+        <button id="download-cert-btn" class="primary-btn" style="padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;">
+            📜 Download Certificate
+        </button>
+      </div>
+
+      <!-- Progress Bar Container -->
+      <div class="progress-bar-container" style="background: #e2e8f0; height: 12px; border-radius: 6px; overflow: hidden; margin: 1rem 0;">
+        <div id="progress-bar-fill" style="background: #31a2b8; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+      </div>
+
+      <p id="next-level-hint" class="status-message" style="margin-bottom: 2rem; text-align: center; color: #64748b;"></p>
+
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0;" />
+
+      <h3>🏆 Reading Journey Roadmap</h3>
+
+      <!-- Milestone Roadmap List -->
+      <ul id="milestones-list" class="milestones-list" style="list-style: none; padding: 0;"></ul>
+    </div>
+  </main>
+
+  <!-- Script entry point -->
+  <script type="module" src="/src/js/levels.js"></script>
+</body>
+</html>

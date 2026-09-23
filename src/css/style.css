@@ -39,6 +39,12 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.app-tagline {
+  color: #ffffff; /* White text for strong contrast against teal */
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
 .logo-container {
   display: flex;
   justify-content: center;
@@ -99,6 +105,7 @@ body {
   text-decoration: none;
   font-size: 1.1rem;
   margin-top: 1rem;
+  margin-right: 10px;
   transition: background-color 0.2s ease;
 }
 

@@ -16,7 +16,7 @@ body {
   color: var(--text-dark);
 
   /* Set background image */
-  background-image: url('/bg.jpg');
+  background-image: url('/img/bg.jpg');
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-position: center top;

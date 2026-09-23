@@ -5,14 +5,15 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        search: resolve(__dirname, 'search.html'),
-        wishlist: resolve(__dirname, 'wishlist.html'),
+        main: resolve(import.meta.dirname, 'index.html'),
+        search: resolve(import.meta.dirname, 'search.html'),
+        wishlist: resolve(import.meta.dirname, 'wishlist.html'),
+        levels: resolve(import.meta.dirname, 'levels.html'),
       },
     },
   },
   test: {
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
   },
 });

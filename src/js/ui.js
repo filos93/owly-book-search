@@ -7,11 +7,11 @@ export function initAssets() {
     favicon.rel = 'icon';
     document.head.appendChild(favicon);
   }
-  favicon.href = '/favicon.png';
+  favicon.href = 'img/favicon.png';
 
   const logoEl = document.querySelector('.app-logo');
   if (logoEl) {
-    logoEl.src = '/logo.png';
+    logoEl.src = 'img/logo.png';
   }
 
   updateWishlistBadge();

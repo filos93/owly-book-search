@@ -55,11 +55,20 @@ owly-book-search/
 ## 📸 App Preview & Visual Highlights
 
 **Home**
-public/img/home-screenshot.png
+
+<img width="400" height="200" alt="owly-home-screenshot" src="https://github.com/user-attachments/assets/dca8dc81-f467-45a3-b08d-7af12d4c671b" />
 
 **Library Search**
+
+<img width="400" height="200" alt="owly-search-tool-screenshot" src="https://github.com/user-attachments/assets/7fa31908-7947-4704-9790-68524345ccee" />
+
 **Saved books**
+
+<img width="400" height="200" alt="owly-saved-books-screenshot" src="https://github.com/user-attachments/assets/59e7c69a-7be0-430a-afdd-aa2717a16965" />
+
 **Book Journey**
+
+<img width="400" height="200" alt="owly-book-journey-screenshot" src="https://github.com/user-attachments/assets/96ea74ca-bf65-4548-beaf-3eaa9fc1c92d" />
 
 ---
 

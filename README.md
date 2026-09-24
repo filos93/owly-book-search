@@ -96,7 +96,9 @@ Owly demonstrates how a standard book search interface can be elevated into an e
 
 ## 👨‍💻 Author
 
-Developed with ❤️ by FLG
+Developed with ❤️ by 
+
+<img src="docs/flg-signature.svg" alt="FLG — Neuroscience & Technology" width=200 />
 
 ---
 

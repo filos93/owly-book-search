@@ -1,6 +1,13 @@
-# <img src="public/img/logo.png" alt="Owly Logo" width="150" height="150" valign="middle" /> Owly — Interactive Book Search & Reading Tracker
+<p align="center">
+  <img src="public/img/logo.png" alt="Owly Logo" width="200" />
+</p>
 
-Owly is a high-performance web application designed for early childhood literacy. Built with pure Vanilla JavaScript and Vite, it allows users to search children's literature via Open Library, maintain a local reading wishlist, track milestones, and generate downloadable PDF reading certificates.
+<h1 align="center">Owly — Interactive Book Search & Reading Tracker</h1>
+
+<p align="center">
+  Owly is a high-performance web application designed for primary school literacy. Built with pure Vanilla JavaScript and Vite, it allows users to 
+  search literature via Open Library, maintain a local reading wishlist, track milestones, and generate downloadable PDF reading certificates.
+</p>
 
 ---
 

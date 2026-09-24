@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Certificate Download
   if (downloadBtn) {
-    downloadBtn.addEventListener('click', () => {
-      generateCertificate(currentMilestone, totalRead, completedBooks);
+    downloadBtn.addEventListener('click', async () => {
+      await generateCertificate(currentMilestone, totalRead, completedBooks);
     });
   }
 
@@ -142,29 +142,6 @@ async function getImageDataUrl(url) {
 }
 
 /**
- * Helper to convert and clean up an image from public/ into a transparent Base64 string.
- */
-async function getImageDataUrl(url) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      resolve({
-        dataUrl: canvas.toDataURL('image/png'),
-        aspectRatio: img.naturalWidth / img.naturalHeight
-      });
-    };
-    img.onerror = () => resolve(null);
-    img.src = url;
-  });
-}
-
-/**
  * Generates a PDF certificate with an accurately scaled, high-res logo.
  */
 async function generateCertificate(milestone, count, books) {
@@ -191,13 +168,12 @@ async function generateCertificate(milestone, count, books) {
   let startY = 36;
 
   if (logoInfo) {
-    // Increase display height to 32mm and dynamically preserve aspect ratio
     const logoHeight = 32;
     const logoWidth = logoHeight * logoInfo.aspectRatio;
     const logoX = (pageWidth - logoWidth) / 2;
 
     doc.addImage(logoInfo.dataUrl, 'PNG', logoX, 16, logoWidth, logoHeight);
-    startY = 16 + logoHeight + 10; // Position title dynamically below logo
+    startY = 16 + logoHeight + 10;
   }
 
   // 3. Header Title
@@ -242,7 +218,7 @@ async function generateCertificate(milestone, count, books) {
   if (!books || books.length === 0) {
     doc.text('• No books completed yet.', 35, yPosition);
   } else {
-    const displayList = books.slice(0, 10); // Show up to 10 books for brevity
+    const displayList = books.slice(0, 10);
     displayList.forEach((book, index) => {
       const title = book.title || 'Untitled Book';
       const authors = typeof book.authors === 'string' ? book.authors : 'Unknown Author';

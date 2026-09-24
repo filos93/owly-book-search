@@ -28,26 +28,37 @@ literature via Open Library, maintain a local reading wishlist, track milestones
 ## 📁 Project Architecture
 
 ```
-owly-book-search/
-├── index.html               # Home landing page
-├── search.html              # Search interface
-├── wishlist.html            # Saved books overview
-├── levels.html              # Journey & certificate generator
-├── vite.config.js           # Vite & Vitest configuration
+owly-book-search/              
+├── docs/                   
+│    ├── integration-test-results-screenshot.png
+│    └── unit-test-results-screenshot.png
+├── public/
+│    └── img/                  # Static assets (logos, default covers, icons)
+│         ├── bg.jpg
+│         ├── favicon.png
+│         └── logo.png
+├── index.html                 # Home landing page
+├── search.html                # Search interface
+├── wishlist.html              # Saved books overview plus download
+├── levels.html                # Journey & certificate generator
+├── package.json               # Project dependencies and npm scripts
+├── vite.config.js             # Vite & Vitest configuration
 ├── src/
-│   ├── css/                 # Global & component styles
-│   └── js/                  # Application modules
-│       ├── app.js           # Core entry & routing
-│       ├── api.js           # Open Library API requests
-│       ├── ui.js            # DOM rendering & event bindings
-│       ├── storage.js       # LocalStorage manager
-│       ├── home.js          # Homepage logic
-│       ├── search.js        # Search page logic
-│       ├── wishlist.js      # Wishlist page logic
-│       └── levels.js        # Progress & certificate logic
+│    ├── css/                  # Global & component styles
+│    │     └── style.css
+│    └── js/                   # Application modules
+│         ├── app.js           # Core entry & routing
+│         ├── api.js           # Open Library API requests
+│         ├── ui.js            # DOM rendering & event bindings
+│         ├── storage.js       # LocalStorage manager
+│         ├── home.js          # Homepage logic
+│         ├── search.js        # Search page logic
+│         ├── wishlist.js      # Wishlist page logic
+│         └── levels.js        # Progress & certificate logic
 └── test/
-├── api.test.js          # API unit tests (Axios mocking)
-└── integration.test.js  # UI & Storage integration tests (JSDOM)
+│   ├── api.test.js            # API unit tests (Axios mocking)
+│   └── integration.test.js    # UI & Storage integration tests (JSDOM)
+
 ```
 
 ---

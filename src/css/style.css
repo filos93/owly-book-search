@@ -459,8 +459,12 @@ body {
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* 1. Change from center to flex-start */
+  align-items: flex-start; 
+  /* 2. Add padding so it leaves space at the top */
+  padding-top: 5vh; 
   z-index: 1000;
+  overflow-y: auto; /* Ensures scrollability if content is tall */
 }
 
 .modal.hidden {

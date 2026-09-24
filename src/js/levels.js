@@ -168,7 +168,7 @@ async function generateCertificate(milestone, count, books) {
 
   // 2. Load Logo with True Aspect Ratio Scaling
   // Corrected path from '/logo.png' to match Vite's public asset directory
-  const logoInfo = await getImageDataUrl('/img/owly-logo.png');
+  const logoInfo = await getImageDataUrl('/img/logo.png');
   let startY = 36;
 
   if (logoInfo) {

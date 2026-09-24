@@ -142,13 +142,46 @@ async function getImageDataUrl(url) {
 }
 
 /**
+ * Helper to convert and clean up an image from public/ into a transparent Base64 string.
+ */
+async function getImageDataUrl(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      resolve({
+        dataUrl: canvas.toDataURL('image/png'),
+        aspectRatio: img.naturalWidth / img.naturalHeight
+      });
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
+/**
  * Generates a PDF certificate with an accurately scaled, high-res logo.
  */
 async function generateCertificate(milestone, count, books) {
-  // Ensure jsPDF instance is resolved correctly
-  const { jsPDF } = window.jspdf ? window.jspdf : { jsPDF: window.jsPDF };
-  
-  const doc = new jsPDF({
+  // Safe resolution across NPM module imports and window globals
+  let PDFConstructor;
+  if (typeof jsPDF !== 'undefined') {
+    PDFConstructor = jsPDF;
+  } else if (window.jspdf && window.jspdf.jsPDF) {
+    PDFConstructor = window.jspdf.jsPDF;
+  } else if (window.jsPDF) {
+    PDFConstructor = window.jsPDF;
+  } else {
+    console.error('jsPDF library is not loaded.');
+    return;
+  }
+
+  const doc = new PDFConstructor({
     orientation: 'landscape',
     unit: 'mm',
     format: 'a4'
@@ -166,18 +199,17 @@ async function generateCertificate(milestone, count, books) {
   doc.setDrawColor(203, 213, 225);
   doc.rect(10.5, 10.5, pageWidth - 21, pageHeight - 21);
 
-  // 2. Load Logo with True Aspect Ratio Scaling
-  // Corrected path from '/logo.png' to match Vite's public asset directory
+  // 2. Load Logo from public/img/logo.png
   const logoInfo = await getImageDataUrl('/img/logo.png');
   let startY = 36;
 
   if (logoInfo) {
-    const logoHeight = 28; // Standardized height for clean page flow
+    const logoHeight = 28;
     const logoWidth = logoHeight * logoInfo.aspectRatio;
     const logoX = (pageWidth - logoWidth) / 2;
 
     doc.addImage(logoInfo.dataUrl, 'PNG', logoX, 15, logoWidth, logoHeight);
-    startY = 15 + logoHeight + 10; // Position title dynamically below logo
+    startY = 15 + logoHeight + 10;
   }
 
   // 3. Header Title
@@ -195,13 +227,15 @@ async function generateCertificate(milestone, count, books) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(20);
   doc.setTextColor(49, 162, 184);
-  doc.text(`${milestone.title} (Level ${milestone.level})`, pageWidth / 2, startY + 18, { align: 'center' });
+  const milestoneTitle = milestone?.title || 'Bookworm';
+  const milestoneLevel = milestone?.level || 1;
+  doc.text(`${milestoneTitle} (Level ${milestoneLevel})`, pageWidth / 2, startY + 18, { align: 'center' });
 
   // Summary Stat
   doc.setFontSize(12);
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(71, 85, 105);
-  doc.text(`Total Books Completed: ${count}`, pageWidth / 2, startY + 25, { align: 'center' });
+  doc.text(`Total Books Completed: ${count || 0}`, pageWidth / 2, startY + 25, { align: 'center' });
 
   // Divider Line
   const lineY = startY + 31;
@@ -222,7 +256,7 @@ async function generateCertificate(milestone, count, books) {
   if (!books || books.length === 0) {
     doc.text('• No books completed yet.', 35, yPosition);
   } else {
-    const displayList = books.slice(0, 10); // Limit to top 10 for space
+    const displayList = books.slice(0, 10);
     displayList.forEach((book, index) => {
       const title = book.title || 'Untitled Book';
       const authors = typeof book.authors === 'string' ? book.authors : 'Unknown Author';
@@ -243,5 +277,5 @@ async function generateCertificate(milestone, count, books) {
   doc.text('Verified by Owly App', pageWidth - 30, pageHeight - 16, { align: 'right' });
 
   // 6. Download PDF
-  doc.save(`Owly-Certificate-Level-${milestone.level}.pdf`);
+  doc.save(`Owly-Certificate-Level-${milestoneLevel}.pdf`);
 }

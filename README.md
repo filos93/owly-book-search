@@ -1,4 +1,4 @@
-<img width="400" height="400" alt="logo" src="https://github.com/user-attachments/assets/530b85ea-e582-4bd4-a6df-54c8f51c1824" />
+<img width="200" height="200" alt="logo" src="https://github.com/user-attachments/assets/530b85ea-e582-4bd4-a6df-54c8f51c1824" />
 
 # Owly — Interactive Book Search & Reading Tracker
 

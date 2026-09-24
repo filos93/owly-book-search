@@ -83,5 +83,22 @@ owly-book-search/
 
 ---
 
+## 🎥 Live Demo
+
+LINK
+
+---
+
+## 🏆 Conclusions
+Owly demonstrates how a standard book search interface can be elevated into an engaging literacy journey through lightweight architecture, dynamic storage sync, and client-side document generation. The project successfully bridges core ES6 JavaScript patterns with user-centered design, delivering an application that is both technically resilient and highly accessible for young readers.
+
+---
+
+## 👨‍💻 Author
+
+Developed with ❤️ by Filippo La Greca
+
+---
+
 ## 📄 License
-Distributed under the MIT License.
+This project is licensed under the MIT License. See the LICENSE file for details.

@@ -14,8 +14,8 @@
 ## ⚡ Key Features
 
 * **Category & Keyword Search:** Real-time search across thousands of children's book subjects.
-* **Persistent Wishlist:** Bookmark titles locally using browser `localStorage` synchronization.
-* **Reading Milestones:** Interactive progress tracking with `jsPDF` certificate exports.
+* **Persistent Wishlist:** Bookmark titles locally using browser localStorage synchronization.
+* **Reading Milestones:** Interactive progress tracking with jsPDF certificate exports.
 * **Modal Details:** Deep-dive book info with asynchronous description loading and author metadata.
 * **Zero-Framework Architecture:** Lightweight Vanilla JS ES6 modules for maximum rendering speed and zero runtime overhead.
 
@@ -26,7 +26,7 @@
 * **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES6 Modules)
 * **Build Tool:** Vite
 * **HTTP Client:** Axios
-* **Testing Suite:** Vitest + `jsdom`
+* **Testing Suite:** Vitest + jsdom
 * **PDF Engine:** jsPDF
 
 ---

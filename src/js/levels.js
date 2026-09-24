@@ -168,20 +168,7 @@ async function getImageDataUrl(url) {
  * Generates a PDF certificate with an accurately scaled, high-res logo.
  */
 async function generateCertificate(milestone, count, books) {
-  // Safe resolution across NPM module imports and window globals
-  let PDFConstructor;
-  if (typeof jsPDF !== 'undefined') {
-    PDFConstructor = jsPDF;
-  } else if (window.jspdf && window.jspdf.jsPDF) {
-    PDFConstructor = window.jspdf.jsPDF;
-  } else if (window.jsPDF) {
-    PDFConstructor = window.jsPDF;
-  } else {
-    console.error('jsPDF library is not loaded.');
-    return;
-  }
-
-  const doc = new PDFConstructor({
+  const doc = new jsPDF({
     orientation: 'landscape',
     unit: 'mm',
     format: 'a4'
@@ -199,46 +186,45 @@ async function generateCertificate(milestone, count, books) {
   doc.setDrawColor(203, 213, 225);
   doc.rect(10.5, 10.5, pageWidth - 21, pageHeight - 21);
 
-  // 2. Load Logo from public/img/logo.png
+  // 2. Load Logo with True Aspect Ratio Scaling
   const logoInfo = await getImageDataUrl('/img/logo.png');
   let startY = 36;
 
   if (logoInfo) {
-    const logoHeight = 28;
+    // Increase display height to 32mm and dynamically preserve aspect ratio
+    const logoHeight = 32;
     const logoWidth = logoHeight * logoInfo.aspectRatio;
     const logoX = (pageWidth - logoWidth) / 2;
 
-    doc.addImage(logoInfo.dataUrl, 'PNG', logoX, 15, logoWidth, logoHeight);
-    startY = 15 + logoHeight + 10;
+    doc.addImage(logoInfo.dataUrl, 'PNG', logoX, 16, logoWidth, logoHeight);
+    startY = 16 + logoHeight + 10; // Position title dynamically below logo
   }
 
   // 3. Header Title
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(24);
+  doc.setFontSize(26);
   doc.setTextColor(30, 41, 59);
   doc.text('OWLY READING CERTIFICATE', pageWidth / 2, startY, { align: 'center' });
 
   // Subtitle / Milestone Rank
-  doc.setFontSize(13);
+  doc.setFontSize(14);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(100, 116, 139);
-  doc.text('This certifies reading milestone achievement:', pageWidth / 2, startY + 8, { align: 'center' });
+  doc.text('This certifies reading milestone achievement:', pageWidth / 2, startY + 10, { align: 'center' });
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(20);
+  doc.setFontSize(22);
   doc.setTextColor(49, 162, 184);
-  const milestoneTitle = milestone?.title || 'Bookworm';
-  const milestoneLevel = milestone?.level || 1;
-  doc.text(`${milestoneTitle} (Level ${milestoneLevel})`, pageWidth / 2, startY + 18, { align: 'center' });
+  doc.text(`${milestone.title} (Level ${milestone.level})`, pageWidth / 2, startY + 22, { align: 'center' });
 
   // Summary Stat
-  doc.setFontSize(12);
+  doc.setFontSize(13);
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(71, 85, 105);
-  doc.text(`Total Books Completed: ${count || 0}`, pageWidth / 2, startY + 25, { align: 'center' });
+  doc.text(`Total Books Completed: ${count}`, pageWidth / 2, startY + 31, { align: 'center' });
 
   // Divider Line
-  const lineY = startY + 31;
+  const lineY = startY + 37;
   doc.setDrawColor(226, 232, 240);
   doc.line(30, lineY, pageWidth - 30, lineY);
 
@@ -246,22 +232,22 @@ async function generateCertificate(milestone, count, books) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
-  doc.text('Completed Reading Log:', 30, lineY + 8);
+  doc.text('Completed Reading Log:', 30, lineY + 10);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9.5);
   doc.setTextColor(71, 85, 105);
 
-  let yPosition = lineY + 14;
+  let yPosition = lineY + 17;
   if (!books || books.length === 0) {
     doc.text('• No books completed yet.', 35, yPosition);
   } else {
-    const displayList = books.slice(0, 10);
+    const displayList = books.slice(0, 10); // Show up to 10 books for brevity
     displayList.forEach((book, index) => {
       const title = book.title || 'Untitled Book';
       const authors = typeof book.authors === 'string' ? book.authors : 'Unknown Author';
       doc.text(`${index + 1}. "${title}" — ${authors}`, 35, yPosition);
-      yPosition += 5.5;
+      yPosition += 6;
     });
 
     if (books.length > 10) {
@@ -277,5 +263,5 @@ async function generateCertificate(milestone, count, books) {
   doc.text('Verified by Owly App', pageWidth - 30, pageHeight - 16, { align: 'right' });
 
   // 6. Download PDF
-  doc.save(`Owly-Certificate-Level-${milestoneLevel}.pdf`);
+  doc.save(`Owly-Certificate-Level-${milestone.level}.pdf`);
 }

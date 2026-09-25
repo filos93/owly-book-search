@@ -81,7 +81,7 @@ owly-book-search/
 
 **Saved books**
 
-<img width="400" height="200" alt="owly-saved-books-screenshot" src="https://github.com/user-attachments/assets/59e7c69a-7be0-430a-afdd-aa2717a16965" />
+<img width="400" height="200" alt="owly-saved-screenshot" src="https://github.com/user-attachments/assets/6a1264a9-521a-486b-9fcb-386b03cb6cd6" />
 
 **Book Journey**
 

@@ -1,5 +1,16 @@
+// =============================================================================
+// IMPORTS
+// =============================================================================
+
 import { toggleSaveBook, isBookSaved, getSavedBooks } from './storage.js';
 
+// =============================================================================
+// ASSET INITIALIZATION & BADGES
+// =============================================================================
+
+/**
+ * Initializes static site assets (favicon, logo) and updates navigation indicators.
+ */
 export function initAssets() {
   let favicon = document.querySelector("link[rel~='icon']");
   if (!favicon) {
@@ -41,6 +52,10 @@ export function setStatusMessage(message) {
     statusEl.textContent = message;
   }
 }
+
+// =============================================================================
+// COMPONENT RENDERING (BOOKS LIST & BUTTONS)
+// =============================================================================
 
 /**
  * Renders or appends books to the list view.
@@ -114,6 +129,16 @@ export function toggleLoadMoreButton(show) {
   }
 }
 
+// =============================================================================
+// MODAL CONTROLLER
+// =============================================================================
+
+/**
+ * Populates and displays the book details modal dialog.
+ * @param {string} title 
+ * @param {string} authors 
+ * @param {string} description 
+ */
 export function showBookDetailsModal(title, authors, description) {
   const modalTitle = document.getElementById('modal-title');
   const modalAuthors = document.getElementById('modal-authors');

@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- DOCUMENT METADATA & SEO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owly - Interactive Book Search & Reading Tracker</title>
   <meta name="description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="robots" content="index, follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Open Graph / Facebook / LinkedIn -->
+
+  <!-- OPEN GRAPH / SOCIAL MEDIA METADATA -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta property="og:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta property="og:image" content="/img/logo.png" />
   <meta property="og:url" content="https://owly-app.com/" />
-  <!-- Twitter -->
+
+  <!-- TWITTER CARDS METADATA -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta name="twitter:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="twitter:image" content="/img/logo.png" />
+
+  <!-- FAVICON & STYLESHEETS -->
   <link rel="icon" type="image/png" href="/img/favicon.png" />
   <link rel="stylesheet" href="./src/css/style.css" />
 </head>
 <body>
+
+  <!-- GLOBAL HEADER & NAVIGATION -->
   <header class="app-header">
     <div class="logo-container">
       <img src="/img/logo.png" alt="Owly Logo" class="app-logo" />
@@ -35,19 +41,34 @@
     </nav>
   </header>
 
+  <!-- MAIN SAVED BOOKS CONTENT -->
   <main class="container">
+
+    <!-- PAGE TITLE SECTION -->
     <section class="search-section">
       <h2>⭐ Saved Books & Resources</h2>
       <p style="text-align: center; color: #64748b;">Manage your saved reading lists and educational materials.</p>
     </section>
 
+    <!-- BACKUP EXPORT & IMPORT ACTIONS -->
+    <div class="wishlist-actions" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
+      <button id="export-btn" class="cta-button">Export Wishlist (.json)</button>
+        
+      <label for="import-file" class="cta-button" style="cursor: pointer; background-color: #64748b;">
+        Import Wishlist (.json)
+      </label>
+      <input type="file" id="import-file" accept=".json" style="display: none;" />
+    </div>
+
+    <!-- STATUS & FEEDBACK INDICATOR -->
     <section id="status-message" class="status-message"></section>
 
+    <!-- SAVED BOOKS LIST GRID -->
     <section class="results-section">
       <ul id="wishlist-container" class="books-list"></ul>
     </section>
 
-    <!-- Details Modal -->
+    <!-- BOOK DETAILS MODAL DIALOG -->
     <div id="details-modal" class="modal hidden">
       <div class="modal-content">
         <button id="close-modal" class="close-btn">&times;</button>
@@ -60,19 +81,8 @@
 
   </main>
 
-
-  <div class="wishlist-actions" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
-    <button id="export-btn" class="cta-button">Export Wishlist (.json)</button>
-      
-    <label for="import-file" class="cta-button" style="cursor: pointer; background-color: #64748b;">
-        Import Wishlist (.json)
-    </label>
-    <input type="file" id="import-file" accept=".json" style="display: none;" />
-  </div>
-
-  <ul id="wishlist-container" class="books-list"></ul>
-
-
+  <!-- MODULE SCRIPTS -->
   <script type="module" src="/src/js/wishlist.js"></script>
+
 </body>
 </html>

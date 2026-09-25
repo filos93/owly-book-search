@@ -1,3 +1,7 @@
+// =============================================================================
+// IMPORTS & MOCKS
+// =============================================================================
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import { searchBooksByCategory, fetchBookDescription } from '../src/js/api.js';
@@ -14,6 +18,10 @@ vi.mock('axios', () => {
   };
 });
 
+// =============================================================================
+// API MODULE UNIT TESTS
+// =============================================================================
+
 describe('API Module Unit Tests', () => {
   let axiosInstance;
 
@@ -21,6 +29,10 @@ describe('API Module Unit Tests', () => {
     vi.clearAllMocks();
     axiosInstance = axios.create();
   });
+
+  // ---------------------------------------------------------------------------
+  // Category Search Unit Tests
+  // ---------------------------------------------------------------------------
 
   describe('searchBooksByCategory', () => {
     it('should format category query and return works array', async () => {
@@ -50,6 +62,10 @@ describe('API Module Unit Tests', () => {
     });
   });
 
+  // ---------------------------------------------------------------------------
+  // Book Details & Description Unit Tests
+  // ---------------------------------------------------------------------------
+  
   describe('fetchBookDescription', () => {
     it('should handle string description and format workKey if missing prefix', async () => {
       axiosInstance.get.mockResolvedValueOnce({

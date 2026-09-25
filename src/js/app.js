@@ -1,3 +1,7 @@
+// =============================================================================
+// IMPORTS
+// =============================================================================
+
 import { fetchBooksBySubject, fetchBookDescription } from './api.js';
 import { 
   initAssets, 
@@ -7,16 +11,17 @@ import {
   hideModal 
 } from './ui.js';
 
+// =============================================================================
+// APPLICATION INITIALIZATION & DOM EVENTS
+// =============================================================================
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initialize static visual assets (Logo, Favicon, Background)
   initAssets();
 
-  // 2. DOM Elements
   const searchBtn = document.getElementById('search-btn');
   const categoryInput = document.getElementById('category-input');
   const closeModalBtn = document.getElementById('close-modal');
 
-  // 3. Event Listeners
   if (searchBtn) {
     searchBtn.addEventListener('click', handleSearch);
   }
@@ -31,7 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn.addEventListener('click', hideModal);
   }
 
-  // 4. Search Handler
+  // =============================================================================
+  // EVENT HANDLERS & SEARCH CONTROLLER
+  // =============================================================================
+  
   async function handleSearch() {
     if (!categoryInput) return;
 
@@ -51,7 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 5. Book Selection Handler
+  /**
+   * Fetches detailed information for a selected book and opens the modal viewport.
+   * @param {string} workKey 
+   * @param {string} title 
+   * @param {string} authors 
+   */
   async function handleBookSelect(workKey, title, authors) {
     setStatusMessage('Loading description...');
     try {

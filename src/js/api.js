@@ -1,9 +1,17 @@
+// =============================================================================
+// IMPORTS & HTTP CLIENT CONFIGURATION
+// =============================================================================
+
 import axios from 'axios';
 
 const apiClient = axios.create({
   baseURL: 'https://openlibrary.org',
   timeout: 10000,
 });
+
+// =============================================================================
+// SEARCH & CATEGORY API SERVICES
+// =============================================================================
 
 /**
  * Searches books by category with pagination support.
@@ -38,6 +46,15 @@ export async function searchBooksByCategory(category, limit = 30, offset = 0) {
   }
 }
 
+// =============================================================================
+// BOOK DETAILS & DESCRIPTION API SERVICES
+// =============================================================================
+
+/**
+ * Fetches the detailed description for a specific work.
+ * @param {string} workKey - Open Library work ID or key
+ * @returns {Promise<string>}
+ */
 export async function fetchBookDescription(workKey) {
   if (!workKey) {
     throw new Error('Invalid book key.');

@@ -1,3 +1,7 @@
+// =============================================================================
+// IMPORTS
+// =============================================================================
+
 import { searchBooksByCategory, fetchBookDescription } from './api.js';
 import { 
   initAssets, 
@@ -7,6 +11,10 @@ import {
   showBookDetailsModal, 
   hideModal 
 } from './ui.js';
+
+// =============================================================================
+// APPLICATION INITIALIZATION & EVENT BINDINGS
+// =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
   initAssets();
@@ -24,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategory = '';
   let totalLoaded = 0;
 
-  // 1. Chip Legend Integration
+  // Chip Legend Integration
   chipButtons.forEach(button => {
     button.addEventListener('click', () => {
       const selectedCategory = button.getAttribute('data-category');
@@ -36,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryInput.value = cleanLabel;
       }
 
-      // Triggers handleSearch(), using status text inside the card
       handleSearch();
     });
   });
@@ -45,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBtn.addEventListener('click', handleSearch);
   }
 
+  // Event Listeners
   if (categoryInput) {
     categoryInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
@@ -70,6 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // =============================================================================
+  // EVENT HANDLERS & SEARCH CONTROLLER
+  // =============================================================================
+  
   /**
    * Fresh Search Handler
    */

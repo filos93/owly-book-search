@@ -1,3 +1,7 @@
+// =============================================================================
+// IMPORTS & CONSTANTS
+// =============================================================================
+
 import { jsPDF } from 'jspdf';
 import { getUserProfile } from './storage.js';
 import { initAssets } from './ui.js';
@@ -11,6 +15,10 @@ const MILESTONES = [
   { level: 6, title: 'Literary Scholar', booksRequired: 35, badge: '🎓', desc: 'Read 35 books' },
   { level: 7, title: 'Owly Legend', booksRequired: 50, badge: '👑', desc: 'Read 50 books' },
 ];
+
+// =============================================================================
+// DOM INITIALIZATION & EVENT LISTENERS
+// =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
   initAssets();
@@ -118,6 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// =============================================================================
+// IMAGE & ASSET HELPERS
+// =============================================================================
+
 /**
  * Helper to convert and clean up an image from public/ into a transparent Base64 string.
  */
@@ -141,8 +153,15 @@ async function getImageDataUrl(url) {
   });
 }
 
+// =============================================================================
+// PDF CERTIFICATE GENERATOR
+// =============================================================================
+
 /**
  * Generates a PDF certificate with an accurately scaled, high-res logo.
+ * @param {Object} milestone 
+ * @param {number} count 
+ * @param {Array} books 
  */
 async function generateCertificate(milestone, count, books) {
   const doc = new jsPDF({

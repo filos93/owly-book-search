@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- DOCUMENT METADATA & SEO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owly - Interactive Book Search & Reading Tracker</title>
   <meta name="description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="robots" content="index, follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Open Graph / Facebook / LinkedIn -->
+
+  <!-- OPEN GRAPH / SOCIAL MEDIA METADATA -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta property="og:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta property="og:image" content="/img/logo.png" />
   <meta property="og:url" content="https://owly-app.com/" />
-  <!-- Twitter -->
+
+  <!-- TWITTER CARDS METADATA -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta name="twitter:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="twitter:image" content="/img/logo.png" />
+
+  <!-- FAVICON & STYLESHEETS -->
   <link rel="icon" type="image/png" href="/img/favicon.png" />
   <link rel="stylesheet" href="./src/css/style.css" />
 </head>
 <body>
+
+  <!-- GLOBAL HEADER & NAVIGATION -->
   <header class="app-header">
     <div class="logo-container">
       <img src="/img/logo.png" alt="Owly Logo" class="app-logo" />
@@ -35,8 +41,10 @@
     </nav>
   </header>
 
+  <!-- MAIN LIBRARY SEARCH CONTENT -->
   <main class="container">
-    <!-- Search Section Card -->
+
+    <!-- CATEGORY SEARCH & QUICK FILTER CHIPS SECTION -->
     <section class="search-section">
       <h2>Search Books by Category</h2>
       
@@ -51,7 +59,7 @@
         <button id="search-btn" class="btn primary-btn">Search</button>
       </div>
 
-      <!-- Category Search Legend Card (Nested Inside) -->
+      <!-- POPULAR CATEGORIES LEGEND -->
       <div class="category-legend-card">
         <h3>🏷️ Explore Popular Categories</h3>
         <p class="legend-help-text">Click a category tag or type a topic above to search Open Library subject indices.</p>
@@ -69,20 +77,19 @@
       </div>
     </section>
 
-    <!-- Status & Loading message displayed inside the card -->
+    <!-- STATUS & FEEDBACK INDICATOR -->
     <div id="status-message" class="status-message"></div>
 
-    <!-- Results Grid -->
+    <!-- SEARCH RESULTS GRID & PAGINATION -->
     <section class="results-section">
       <div id="books-list" class="books-grid"></div>
       
-      <!-- Load More Button -->
       <div class="load-more-container" style="text-align: center; margin-top: 2rem;">
         <button id="load-more-btn" class="cta-button hidden">Load More Books</button>
       </div>
     </section>
 
-    <!-- Details Modal -->
+    <!-- BOOK DETAILS MODAL DIALOG -->
     <div id="details-modal" class="modal hidden">
       <div class="modal-content">
         <button id="close-modal" class="close-btn">&times;</button>
@@ -92,8 +99,11 @@
         <p id="modal-description" class="description"></p>
       </div>
     </div>
+
   </main>
 
+  <!-- MODULE SCRIPTS -->
   <script type="module" src="/src/js/search.js"></script>
+
 </body>
 </html>

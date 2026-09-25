@@ -1,5 +1,13 @@
+// =============================================================================
+// STORAGE KEYS & CONSTANTS
+// =============================================================================
+
 const WISHLIST_KEY = 'owly_saved_books';
 const PROFILE_KEY = 'owly_user_profile';
+
+// =============================================================================
+// INTERNAL HELPERS
+// =============================================================================
 
 /**
  * Safely extracts the key string from a book object or string key.
@@ -9,6 +17,10 @@ function extractKey(bookOrKey) {
   if (typeof bookOrKey === 'string') return bookOrKey;
   return bookOrKey.key || bookOrKey.workKey || null;
 }
+
+// =============================================================================
+// WISHLIST / SAVED BOOKS MANAGER
+// =============================================================================
 
 /**
  * Retrieves saved books from localStorage.
@@ -72,6 +84,10 @@ export function isBookSaved(bookOrKey) {
   return saved.some(b => extractKey(b) === targetKey);
 }
 
+// =============================================================================
+// IMPORT / EXPORT BACKUP MANAGEMENT
+// =============================================================================
+
 /**
  * Downloads the saved books as a JSON file.
  */
@@ -115,6 +131,10 @@ export function importWishlist(file, onSuccess) {
   };
   reader.readAsText(file);
 }
+
+// =============================================================================
+// USER PROFILE & READ BOOKS MANAGER
+// =============================================================================
 
 /**
  * Retrieves user profile or defaults to an empty profile structure.

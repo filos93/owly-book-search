@@ -1,3 +1,7 @@
+// =============================================================================
+// IMPORTS
+// =============================================================================
+
 import { fetchBookDescription } from './api.js';
 import { 
   getSavedBooks, 
@@ -15,6 +19,10 @@ import {
   hideModal, 
   updateWishlistBadge 
 } from './ui.js';
+
+// =============================================================================
+// APPLICATION INITIALIZATION & EVENT BINDINGS
+// =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
   initAssets();
@@ -59,6 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderWishlist();
 
+  // =============================================================================
+  // COMPONENT RENDERING & CARD ACTIONS
+  // =============================================================================
+
+  /**
+   * Renders the user's saved books grid view with read/remove/details action handlers.
+   */
   function renderWishlist() {
     if (!container) return;
     const books = getSavedBooks();
@@ -113,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderWishlist();
       });
 
-      // 2. Remove from Wishlist handler
+      // Remove from Wishlist handler
       const removeBtn = li.querySelector('.remove-btn');
       removeBtn.addEventListener('click', () => {
         toggleSaveBook({
@@ -125,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWishlistBadge();
       });
 
-      // 3. View Details handler
+      // View Details handler
       const detailsBtn = li.querySelector('.details-btn');
       detailsBtn.addEventListener('click', async () => {
         setStatusMessage('Loading description...');

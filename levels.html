@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- DOCUMENT METADATA & SEO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owly - Interactive Book Search & Reading Tracker</title>
   <meta name="description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="robots" content="index, follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Open Graph / Facebook / LinkedIn -->
+
+  <!-- OPEN GRAPH / SOCIAL MEDIA METADATA -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta property="og:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta property="og:image" content="/img/logo.png" />
   <meta property="og:url" content="https://owly-app.com/" />
-  <!-- Twitter -->
+
+  <!-- TWITTER CARDS METADATA -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta name="twitter:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="twitter:image" content="/img/logo.png" />
+
+  <!-- FAVICON & STYLESHEETS -->
   <link rel="icon" type="image/png" href="/img/favicon.png" />
   <link rel="stylesheet" href="./src/css/style.css" />
 </head>
 <body>
+
+  <!-- GLOBAL HEADER & NAVIGATION -->
   <header class="app-header">
     <div class="logo-container">
       <img src="/img/logo.png" alt="Owly Logo" class="app-logo" />
@@ -35,37 +41,41 @@
     </nav>
   </header>
 
+  <!-- MAIN MILESTONES & LEVEL TRACKER CONTENT -->
   <main class="container">
-      <div class="level-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <span id="current-badge" style="font-size: 2.5rem;">🥚</span>
-            <div>
-            <h2 id="current-level-title" style="margin: 0;">Fledgling Reader (Level 1)</h2>
-            <p id="total-read-count" style="margin: 4px 0 0 0; color: #64748b;">0 Books Completed</p>
-            </div>
+
+    <!-- CURRENT LEVEL HEADER & CERTIFICATE ACTION -->
+    <div class="level-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span id="current-badge" style="font-size: 2.5rem;">🥚</span>
+        <div>
+          <h2 id="current-level-title" style="margin: 0;">Fledgling Reader (Level 1)</h2>
+          <p id="total-read-count" style="margin: 4px 0 0 0; color: #64748b;">0 Books Completed</p>
         </div>
-        <button id="download-cert-btn" class="primary-btn" style="padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;">
-            📜 Download Certificate
-        </button>
       </div>
-
-      <!-- Progress Bar Container -->
-      <div class="progress-bar-container" style="background: #e2e8f0; height: 12px; border-radius: 6px; overflow: hidden; margin: 1rem 0;">
-        <div id="progress-bar-fill" style="background: #31a2b8; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
-      </div>
-
-      <p id="next-level-hint" class="status-message" style="margin-bottom: 2rem; text-align: center; color: #64748b;"></p>
-
-      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0;" />
-
-      <h3>🏆 Reading Journey Roadmap</h3>
-
-      <!-- Milestone Roadmap List -->
-      <ul id="milestones-list" class="milestones-list" style="list-style: none; padding: 0;"></ul>
+      <button id="download-cert-btn" class="primary-btn" style="padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer;">
+        📜 Download Certificate
+      </button>
     </div>
+
+    <!-- PROGRESS BAR & NEXT LEVEL HINT -->
+    <div class="progress-bar-container" style="background: #e2e8f0; height: 12px; border-radius: 6px; overflow: hidden; margin: 1rem 0;">
+      <div id="progress-bar-fill" style="background: #31a2b8; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+    </div>
+    <p id="next-level-hint" class="status-message" style="margin-bottom: 2rem; text-align: center; color: #64748b;"></p>
+
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0;" />
+
+    <!-- MILESTONE ROADMAP SECTION -->
+    <section class="roadmap-section">
+      <h3>🏆 Reading Journey Roadmap</h3>
+      <ul id="milestones-list" class="milestones-list" style="list-style: none; padding: 0;"></ul>
+    </section>
+
   </main>
 
-  <!-- Script entry point -->
+  <!-- MODULE SCRIPTS -->
   <script type="module" src="/src/js/levels.js"></script>
+
 </body>
 </html>

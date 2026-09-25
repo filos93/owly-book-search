@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- DOCUMENT METADATA & SEO -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owly - Interactive Book Search & Reading Tracker</title>
   <meta name="description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="robots" content="index, follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Open Graph / Facebook / LinkedIn -->
+
+  <!-- OPEN GRAPH / SOCIAL MEDIA METADATA -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta property="og:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta property="og:image" content="/img/logo.png" />
   <meta property="og:url" content="https://owly-app.com/" />
-  <!-- Twitter -->
+
+  <!-- TWITTER CARDS METADATA -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Owly - Interactive Book Search & Reading Tracker" />
   <meta name="twitter:description" content="Discover new books, explore genres via interactive category chips, and track your reading goals." />
   <meta name="twitter:image" content="/img/logo.png" />
+
+  <!-- FAVICON & STYLESHEETS -->
   <link rel="icon" type="image/png" href="/img/favicon.png" />
   <link rel="stylesheet" href="./src/css/style.css" />
 </head>
 <body>
+
+  <!-- GLOBAL HEADER & NAVIGATION -->
   <header class="app-header">
     <div class="logo-container">
       <img src="/img/logo.png" alt="Owly Logo" class="app-logo" />
@@ -30,13 +36,15 @@
     <nav class="nav-links">
       <a href="index.html" class="nav-link active">Home</a>
       <a href="search.html" class="nav-link">Library Search</a>
-      <!-- Clean Nav Link without (0) text -->
       <a href="wishlist.html" id="wishlist-nav-link" class="nav-link">Saved Books</a>
       <a href="levels.html" class="nav-link">Book Journey</a>
     </nav>
   </header>
 
+  <!-- MAIN LANDING CONTENT -->
   <main class="container hero-container">
+
+    <!-- HERO CALL-TO-ACTION SECTION -->
     <section class="hero-section">
       <h1>Discover Your Next Great Read with Owly</h1>
       <p class="hero-description">
@@ -48,6 +56,7 @@
       </div>
     </section>
 
+    <!-- FEATURES OVERVIEW GRID -->
     <section class="features-grid">
       <div class="feature-card">
         <h3>🔍 Category Search</h3>
@@ -62,11 +71,11 @@
         <p>Save favorite titles to your wishlist and log completed reads to unlock achievement milestones.</p>
       </div>
     </section>
+
   </main>
 
-  <!-- Add this at the bottom of index.html -->
+  <!-- MODULE SCRIPTS -->
   <script type="module" src="/src/js/home.js"></script>
 
 </body>
 </html>
-

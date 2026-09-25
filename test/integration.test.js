@@ -1,6 +1,14 @@
+// =============================================================================
+// IMPORTS
+// =============================================================================
+
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderBooksList } from '../src/js/ui.js';
 import { getSavedBooks } from '../src/js/storage.js';
+
+// =============================================================================
+// UI & STORAGE INTEGRATION TESTS
+// =============================================================================
 
 describe('UI & Storage Integration Tests', () => {
   beforeEach(() => {
@@ -12,6 +20,10 @@ describe('UI & Storage Integration Tests', () => {
       <a id="wishlist-nav-link"></a>
     `;
   });
+
+  // ---------------------------------------------------------------------------
+  // Book Card Rendering & Save Persistence Tests
+  // ---------------------------------------------------------------------------
 
   it('should render books into #books-list and save to storage when clicking save button', () => {
     const booksData = [
@@ -46,6 +58,10 @@ describe('UI & Storage Integration Tests', () => {
     expect(savedBooks[0].key).toBe('/works/OL999W');
   });
 
+  // ---------------------------------------------------------------------------
+  // Card Actions & Callback Event Tests
+  // ---------------------------------------------------------------------------
+  
   it('should trigger modal callback when clicking details button', () => {
     const booksData = [
       {

@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Simplified
       const authorText = book.authors.join(', ');
-      const read = isBookRead(book.Key);
+      const read = isBookRead(book.key);
 
       // Info Container
       const infoDiv = document.createElement('div');

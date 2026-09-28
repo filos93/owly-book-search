@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('details-modal');
   const chipButtons = document.querySelectorAll('.chip-btn');
 
-// Pagination & Async Request State
+  // Pagination & Async Request State
   const LIMIT = 30;
   let currentOffset = 0;
   let currentCategory = '';
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     totalLoaded = 0;
     isLoading = true;
 
-renderBooksList([], null, false);
+    renderBooksList([], null, false);
     toggleLoadMoreButton(false);
     setStatusMessage(`Searching for "${category}" books, please wait...`);
 

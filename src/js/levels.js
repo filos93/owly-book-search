@@ -26,12 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const profile = getUserProfile();
   const rawBooks = profile.readBooks || [];
 
-  // Deduplicate and pull full completed book details
+  // Deduplicate completed books (already normalized by storage.js)
   const uniqueBooksMap = new Map();
-  rawBooks.forEach(b => {
-    const key = typeof b === 'string' ? b : (b?.key || b?.workKey);
-    if (key && !uniqueBooksMap.has(key)) {
-      uniqueBooksMap.set(key, b);
+  rawBooks.forEach(book => {
+    if (book.key && !uniqueBooksMap.has(book.key)) {
+      uniqueBooksMap.set(book.key, book);
     }
   });
 
@@ -64,7 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle Certificate Download
   if (downloadBtn) {
     downloadBtn.addEventListener('click', async () => {
-      await generateCertificate(currentMilestone, totalRead, completedBooks);
+      try {
+        await generateCertificate(currentMilestone, totalRead, completedBooks);
+      } catch (err) {
+        console.error('Certificate generation failed:', err);
+      }
     });
   }
 
@@ -181,7 +184,7 @@ async function generateCertificate(milestone, count, books) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  // 1. Decorative Borders
+  // Decorative Borders
   doc.setLineWidth(2);
   doc.setDrawColor(49, 162, 184); // Owly cyan
   doc.rect(8, 8, pageWidth - 16, pageHeight - 16);
@@ -190,7 +193,7 @@ async function generateCertificate(milestone, count, books) {
   doc.setDrawColor(203, 213, 225);
   doc.rect(10.5, 10.5, pageWidth - 21, pageHeight - 21);
 
-  // 2. Load Logo with True Aspect Ratio Scaling
+  // Load Logo with True Aspect Ratio Scaling
   const logoInfo = await getImageDataUrl('/img/logo.png');
   let startY = 36;
 
@@ -203,7 +206,7 @@ async function generateCertificate(milestone, count, books) {
     startY = 16 + logoHeight + 10;
   }
 
-  // 3. Header Title
+  // Header Title
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.setTextColor(30, 41, 59);
@@ -231,7 +234,7 @@ async function generateCertificate(milestone, count, books) {
   doc.setDrawColor(226, 232, 240);
   doc.line(30, lineY, pageWidth - 30, lineY);
 
-  // 4. Completed Books List
+  // Completed Books List
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
@@ -247,9 +250,8 @@ async function generateCertificate(milestone, count, books) {
   } else {
     const displayList = books.slice(0, 10);
     displayList.forEach((book, index) => {
-      const title = book.title || 'Untitled Book';
-      const authors = typeof book.authors === 'string' ? book.authors : 'Unknown Author';
-      doc.text(`${index + 1}. "${title}" — ${authors}`, 35, yPosition);
+      const authors = book.authors.join(', ');
+      doc.text(`${index + 1}. "${book.title}" — ${authors}`, 35, yPosition);
       yPosition += 6;
     });
 
@@ -258,7 +260,7 @@ async function generateCertificate(milestone, count, books) {
     }
   }
 
-  // 5. Footer Info
+  // Footer Info
   const today = new Date().toLocaleDateString();
   doc.setFontSize(9);
   doc.setTextColor(148, 163, 184);

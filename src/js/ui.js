@@ -2,7 +2,7 @@
 // IMPORTS
 // =============================================================================
 
-import { toggleSaveBook, isBookSaved, getSavedBooks } from './storage.js';
+import { toggleSaveBook, isBookSaved } from './storage.js';
 
 // =============================================================================
 // ASSET INITIALIZATION & BADGES
@@ -77,10 +77,7 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
     const li = document.createElement('li');
     li.className = 'book-card';
 
-    const authors = book.authors 
-      ? book.authors.map(a => a.name).join(', ') 
-      : 'Unknown Author';
-
+    const authorText = book.authors.join(', ');
     const saved = isBookSaved(book.key);
 
     // Container for details (title + authors)
@@ -88,11 +85,11 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
     
     const titleEl = document.createElement('div');
     titleEl.className = 'book-title';
-    titleEl.textContent = book.title || 'Untitled';
+    titleEl.textContent = book.title;
 
     const authorsEl = document.createElement('div');
     authorsEl.className = 'book-authors';
-    authorsEl.textContent = authors;
+    authorsEl.textContent = authorText;
 
     detailsContainer.appendChild(titleEl);
     detailsContainer.appendChild(authorsEl);
@@ -107,7 +104,7 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
 
     saveBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isNowSaved = toggleSaveBook({ key: book.key, title: book.title, authors });
+      const isNowSaved = toggleSaveBook(book);
       saveBtn.textContent = isNowSaved ? '★ Saved' : '☆ Save';
       saveBtn.classList.toggle('saved', isNowSaved);
       updateWishlistBadge();
@@ -118,7 +115,7 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
     detailsBtn.textContent = 'View Details';
 
     detailsBtn.addEventListener('click', () => {
-      onBookClickCallback(book.key, book.title, authors);
+      onBookClickCallback(book.key, book.title, authorText);
     });
 
     actionsContainer.appendChild(saveBtn);

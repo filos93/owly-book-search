@@ -111,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const titleDiv = document.createElement('div');
       titleDiv.className = `book-title ${read ? 'read-title' : ''}`;
-      titleDiv.textContent = `${book.title || 'Untitled'} ${read ? '✓' : ''}`;
+      //titleDiv.textContent = `${book.title || 'Untitled'} ${read ? '✓' : ''}`;
+      titleDiv.textContent = `${book.title} ${read ? '✓' : ''}`;
 
       const authorDiv = document.createElement('div');
       authorDiv.className = 'book-authors';

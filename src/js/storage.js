@@ -15,7 +15,7 @@ const PROFILE_KEY = 'owly_user_profile';
  * @param {Object|string} bookOrKey 
  * @returns {Object|null}
  */
-function sanitizeBookEntry(bookOrKey) {
+function sanitizeBookEntry(bookOrKey) { // Need this when reading from localStorage or legacy data
   if (!bookOrKey) return null;
 
   // Handle bare string key lookup
@@ -189,12 +189,26 @@ export function importWishlist(file) {
 
 /**
  * Retrieves user profile or defaults to an empty profile structure.
+ * Normalizes readBooks entries into canonical { key, title, authors: string[] } shape.
  */
 export function getUserProfile() {
   try {
     const profile = localStorage.getItem(PROFILE_KEY);
     const parsed = profile ? JSON.parse(profile) : {};
-    return { readBooks: [], ...parsed };
+    const rawReadBooks = Array.isArray(parsed.readBooks) ? parsed.readBooks : [];
+
+    const readBooks = rawReadBooks
+      .map(entry => {
+        const sanitized = sanitizeBookEntry(entry);
+        if (!sanitized) return null;
+        return {
+          ...sanitized,
+          readAt: entry.readAt || new Date().toISOString()
+        };
+      })
+      .filter(Boolean);
+
+    return { ...parsed, readBooks };
   } catch (err) {
     return { readBooks: [] };
   }

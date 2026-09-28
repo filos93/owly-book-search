@@ -14,13 +14,14 @@ const apiClient = axios.create({
 // =============================================================================
 
 /**
- * Searches books by category with pagination support.
+ * Searches books by category with pagination support and optional cancellation signal.
  * @param {string} category 
  * @param {number} limit - Number of items per request (default: 30)
  * @param {number} offset - Number of items to skip for pagination (default: 0)
+ * @param {Object} [options] - Additional request options (e.g. { signal })
  * @returns {Promise<Array>}
  */
-export async function searchBooksByCategory(category, limit = 30, offset = 0) {
+export async function searchBooksByCategory(category, limit = 30, offset = 0, options = {}) {
   if (!category || !category.trim()) {
     throw new Error('Please enter a valid search category.');
   }
@@ -29,7 +30,8 @@ export async function searchBooksByCategory(category, limit = 30, offset = 0) {
 
   try {
     const response = await apiClient.get(
-      `/subjects/${formattedCategory}.json?limit=${limit}&offset=${offset}`
+      `/subjects/${formattedCategory}.json?limit=${limit}&offset=${offset}`,
+      options
     );
 
     if (!response.data || !response.data.works) {
@@ -38,6 +40,9 @@ export async function searchBooksByCategory(category, limit = 30, offset = 0) {
 
     return response.data.works;
   } catch (error) {
+    if (axios.isCancel(error) || error.name === 'AbortError') {
+      throw error;
+    }
     console.error('API Search Error:', error);
     if (error.code === 'ECONNABORTED') {
       throw new Error('Request timed out. Please check your internet connection.');

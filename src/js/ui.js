@@ -83,7 +83,7 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
 
     const saved = isBookSaved(book.key);
 
-    // Container per i dettagli del libro
+    // Container for details (title + authors)
     const detailsContainer = document.createElement('div');
     
     const titleEl = document.createElement('div');
@@ -97,7 +97,7 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
     detailsContainer.appendChild(titleEl);
     detailsContainer.appendChild(authorsEl);
 
-    // Container per le azioni/pulsanti
+    // Container for actions/buttons
     const actionsContainer = document.createElement('div');
     actionsContainer.className = 'card-actions';
 

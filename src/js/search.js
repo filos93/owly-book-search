@@ -26,11 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('details-modal');
   const chipButtons = document.querySelectorAll('.chip-btn');
 
-  // Pagination state
+// Pagination & Async Request State
   const LIMIT = 30;
   let currentOffset = 0;
   let currentCategory = '';
   let totalLoaded = 0;
+  let isLoading = false;
+  let activeSearchController = null; // AbortController for stopping ongoing fetch requests
 
   // Chip Legend Integration
   chipButtons.forEach(button => {
@@ -39,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!selectedCategory) return;
 
       if (categoryInput) {
-        // Strip emojis to populate input field with clean text (e.g. "📖 Fiction" -> "Fiction")
         const cleanLabel = button.textContent.replace(/^[^\w\s]+/, '').trim();
         categoryInput.value = cleanLabel;
       }
@@ -48,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Event Listeners
   if (searchBtn) {
     searchBtn.addEventListener('click', handleSearch);
   }
 
-  // Event Listeners
   if (categoryInput) {
     categoryInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
@@ -93,19 +94,29 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Stop any ongoing search request before starting a new one
+    if (activeSearchController) {
+      activeSearchController.abort();
+    }
+    activeSearchController = new AbortController();
+
     // Reset pagination state
     currentCategory = category;
     currentOffset = 0;
     totalLoaded = 0;
+    isLoading = true;
 
-    renderBooksList([], null, false);
+renderBooksList([], null, false);
     toggleLoadMoreButton(false);
-
-    // Status text displays inside the category card
     setStatusMessage(`Searching for "${category}" books, please wait...`);
 
     try {
-      const books = await searchBooksByCategory(currentCategory, LIMIT, currentOffset);
+      const books = await searchBooksByCategory(
+        currentCategory, 
+        LIMIT, 
+        currentOffset, 
+        { signal: activeSearchController.signal }
+      );
 
       if (!books || books.length === 0) {
         setStatusMessage(`No books found for "${category}". Try another category!`);
@@ -118,20 +129,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
       toggleLoadMoreButton(books.length === LIMIT);
     } catch (error) {
+      // Ignore abort errors, but log and display other errors
+      if (error.name === 'AbortError' || error.message?.includes('canceled')) {
+        return;
+      }
       console.error('Search failed:', error);
       setStatusMessage(error.message || 'Failed to fetch books. Please try again.');
+    } finally {
+      isLoading = false;
     }
   }
 
   /**
-   * Load More Handler
+   * Load More Pagination Handler - Manages offset and button state atomically.
    */
   async function handleLoadMore() {
-    currentOffset += LIMIT;
+    // UI stop if a loading is already in progress or if the button is disabled
+    if (isLoading || (loadMoreBtn && loadMoreBtn.disabled)) return;
+
+    isLoading = true;
+
+    if (loadMoreBtn) {
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.textContent = 'Loading...';
+    }
+
+    const nextOffset = currentOffset + LIMIT;
     setStatusMessage(`Loading more "${currentCategory}" books...`);
 
     try {
-      const newBooks = await searchBooksByCategory(currentCategory, LIMIT, currentOffset);
+      // Abort any ongoing search request before starting a new one
+      const newBooks = await searchBooksByCategory(
+        currentCategory, 
+        LIMIT, 
+        nextOffset, 
+        { signal: activeSearchController?.signal }
+      );
 
       if (!newBooks || newBooks.length === 0) {
         setStatusMessage(`All available books for "${currentCategory}" have been loaded.`);
@@ -139,21 +172,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // only update the offset and totalLoaded if new books were successfully fetched
+      currentOffset = nextOffset;
       totalLoaded += newBooks.length;
+
       setStatusMessage(`Showing ${totalLoaded} books in "${currentCategory}":`);
-      
-      // Append new items to existing grid
       renderBooksList(newBooks, handleViewDetails, true);
 
       toggleLoadMoreButton(newBooks.length === LIMIT);
     } catch (error) {
+      if (error.name === 'AbortError' || error.message?.includes('canceled')) {
+        return;
+      }
       console.error('Load more failed:', error);
       setStatusMessage('Could not load more books. Please try again.');
+    } finally {
+      // reset loading state and re-enable the button regardless of success or failure
+      isLoading = false;
+      if (loadMoreBtn) {
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = 'Load More Books';
+      }
     }
   }
 
   /**
-   * Modal Description Handler
+   * Modal Details Handler
    */
   async function handleViewDetails(workKey, title, authors) {
     setStatusMessage('Fetching book description...');

@@ -10,6 +10,41 @@ const apiClient = axios.create({
 });
 
 // =============================================================================
+// DATA NORMALIZATION HELPER
+// =============================================================================
+
+/**
+ * Transforms raw Open Library work objects into a standardized internal shape.
+ * @param {Object} rawBook 
+ * @returns {Object|null} Normalized book object { key, title, authors }
+ */
+function normalizeBook(rawBook) {
+  if (!rawBook) return null;
+
+  // Standardize key
+  const key = rawBook.key || rawBook.workKey || '';
+
+  // Standardize title
+  const title = rawBook.title || 'Untitled Book';
+
+  // Standardize authors into an array of strings
+  let authors = [];
+  if (Array.isArray(rawBook.authors)) {
+    authors = rawBook.authors
+      .map(a => (typeof a === 'string' ? a : a?.name))
+      .filter(Boolean);
+  } else if (typeof rawBook.authors === 'string' && rawBook.authors.trim()) {
+    authors = [rawBook.authors.trim()];
+  }
+
+  if (authors.length === 0) {
+    authors = ['Unknown Author'];
+  }
+
+  return { key, title, authors };
+}
+
+// =============================================================================
 // SEARCH & CATEGORY API SERVICES
 // =============================================================================
 
@@ -19,7 +54,7 @@ const apiClient = axios.create({
  * @param {number} limit - Number of items per request (default: 30)
  * @param {number} offset - Number of items to skip for pagination (default: 0)
  * @param {Object} [options] - Additional request options (e.g. { signal })
- * @returns {Promise<Array>}
+ * @returns {Promise<Array>} Normalized array of books
  */
 export async function searchBooksByCategory(category, limit = 30, offset = 0, options = {}) {
   if (!category || !category.trim()) {
@@ -34,11 +69,12 @@ export async function searchBooksByCategory(category, limit = 30, offset = 0, op
       options
     );
 
-    if (!response.data || !response.data.works) {
+    if (!response.data || !Array.isArray(response.data.works)) {
       return [];
     }
 
-    return response.data.works;
+    // MAP AND NORMALIZE incoming items right at the boundary
+    return response.data.works.map(normalizeBook).filter(Boolean);
   } catch (error) {
     if (axios.isCancel(error) || error.name === 'AbortError') {
       throw error;

@@ -90,14 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const li = document.createElement('li');
       li.className = 'book-card';
 
-      // Safely determine book key and author string formatting
-      const bookKey = book.key || book.workKey;
-      const authorText = Array.isArray(book.authors) 
-        ? book.authors.map(a => (typeof a === 'object' ? a.name : a)).join(', ')
-        : (book.authors || 'Unknown Author');
-
-      // Check read status using key object or string
-      const read = isBookRead(bookKey);
+      // Simplified
+      const authorText = book.authors.join(', ');
+      const read = isBookRead(book.Key);
 
       // Info Container
       const infoDiv = document.createElement('div');
@@ -121,12 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
       readBtn.className = `read-btn ${read ? 'completed' : ''}`;
       readBtn.textContent = read ? '✓ Completed' : 'Mark as Read';
 
+      // Simplified
       readBtn.addEventListener('click', () => {
-        toggleReadBook({
-          key: bookKey,
-          title: book.title,
-          authors: book.authors
-        });
+        toggleReadBook(book);
         renderWishlist();
       });
 
@@ -134,12 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
       removeBtn.className = 'remove-btn';
       removeBtn.textContent = 'Remove';
 
+      // Simplified
       removeBtn.addEventListener('click', () => {
-        toggleSaveBook({
-          key: bookKey,
-          title: book.title,
-          authors: authorText
-        });
+        toggleSaveBook(book);
         renderWishlist();
         updateWishlistBadge();
       });
@@ -151,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
       detailsBtn.addEventListener('click', async () => {
         setStatusMessage('Loading description...');
         try {
-          const desc = await fetchBookDescription(bookKey);
+          const desc = await fetchBookDescription(book.key);
           setStatusMessage('');
           showBookDetailsModal(book.title, authorText, desc);
         } catch (error) {

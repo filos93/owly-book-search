@@ -6,11 +6,46 @@ const WISHLIST_KEY = 'owly_saved_books';
 const PROFILE_KEY = 'owly_user_profile';
 
 // =============================================================================
-// INTERNAL HELPERS
+// INTERNAL HELPERS & DATA NORMALIZATION
 // =============================================================================
 
 /**
- * Safely extracts the key string from a book object or string key.
+ * Normalizes any book input or legacy storage record into the unified internal shape.
+ * Shape: { key: string, title: string, authors: string[] }
+ * @param {Object|string} bookOrKey 
+ * @returns {Object|null}
+ */
+function sanitizeBookEntry(bookOrKey) {
+  if (!bookOrKey) return null;
+
+  // Handle bare string key lookup
+  if (typeof bookOrKey === 'string') {
+    return { key: bookOrKey, title: 'Untitled', authors: ['Unknown Author'] };
+  }
+
+  const key = bookOrKey.key || bookOrKey.workKey;
+  if (!key) return null;
+
+  const title = typeof bookOrKey.title === 'string' ? bookOrKey.title : 'Untitled';
+
+  let authors = ['Unknown Author'];
+  if (Array.isArray(bookOrKey.authors)) {
+    authors = bookOrKey.authors
+      .map(a => (typeof a === 'string' ? a : a?.name))
+      .filter(Boolean);
+  } else if (typeof bookOrKey.authors === 'string' && bookOrKey.authors.trim()) {
+    authors = bookOrKey.authors.split(',').map(a => a.trim()).filter(Boolean);
+  }
+
+  if (authors.length === 0) {
+    authors = ['Unknown Author'];
+  }
+
+  return { key, title, authors };
+}
+
+/**
+ * Helper to safely extract key string from a book or string key.
  */
 function extractKey(bookOrKey) {
   if (!bookOrKey) return null;
@@ -23,13 +58,14 @@ function extractKey(bookOrKey) {
 // =============================================================================
 
 /**
- * Retrieves saved books from localStorage.
- * @returns {Array} Array of saved book objects.
+ * Retrieves saved books from localStorage, normalizing legacy items on read.
+ * @returns {Array} Array of normalized book objects.
  */
 export function getSavedBooks() {
   try {
     const data = localStorage.getItem(WISHLIST_KEY);
-    return data ? JSON.parse(data) : [];
+    const books = data ? JSON.parse(data) : [];
+    return books.map(sanitizeBookEntry).filter(Boolean);
   } catch (err) {
     console.error('Error loading wishlist:', err);
     return [];
@@ -41,31 +77,28 @@ export function getSavedBooks() {
  * @param {Array} books 
  */
 export function saveBooks(books) {
-  localStorage.setItem(WISHLIST_KEY, JSON.stringify(books));
+  const normalized = books.map(sanitizeBookEntry).filter(Boolean);
+  localStorage.setItem(WISHLIST_KEY, JSON.stringify(normalized));
 }
 
 /**
- * Toggles a book in/out of the wishlist.
+ * Toggles a book in/out of the wishlist using standardized structure.
  * @param {Object} book - { key, title, authors }
  * @returns {boolean} True if saved, false if removed.
  */
 export function toggleSaveBook(book) {
-  const targetKey = extractKey(book);
-  if (!targetKey) return false;
+  const normalized = sanitizeBookEntry(book);
+  if (!normalized) return false;
 
   const saved = getSavedBooks();
-  const index = saved.findIndex(b => extractKey(b) === targetKey);
+  const index = saved.findIndex(b => b.key === normalized.key);
 
   if (index > -1) {
     saved.splice(index, 1);
     saveBooks(saved);
     return false; // Removed
   } else {
-    saved.push({
-      key: targetKey,
-      title: book.title || 'Untitled',
-      authors: book.authors || 'Unknown Author'
-    });
+    saved.push(normalized);
     saveBooks(saved);
     return true; // Added
   }
@@ -81,7 +114,7 @@ export function isBookSaved(bookOrKey) {
   if (!targetKey) return false;
 
   const saved = getSavedBooks();
-  return saved.some(b => extractKey(b) === targetKey);
+  return saved.some(b => b.key === targetKey);
 }
 
 // =============================================================================
@@ -110,7 +143,7 @@ export function exportWishlist() {
 export const exportWishlistJson = exportWishlist;
 
 /**
- * Imports books from a JSON backup file, validates schema & types, and saves them safely.
+ * Imports books from a JSON backup file, validates schema & types into canonical shape.
  * @param {File} file 
  * @param {Function} onSuccess 
  */
@@ -125,33 +158,17 @@ export function importWishlist(file, onSuccess) {
         return;
       }
 
-      // Validazione formale dello schema di ogni libro per prevenire la persistenza di payload malevoli
+      // Sanitize and validate every imported entry into { key, title, authors: string[] }
       const sanitizedBooks = importedData
-        .filter(item => item && typeof item === 'object')
-        .map(item => {
-          const key = typeof item.key === 'string' ? item.key : (typeof item.workKey === 'string' ? item.workKey : null);
-          const title = typeof item.title === 'string' ? item.title : 'Untitled';
-          let authors = 'Unknown Author';
-
-          if (typeof item.authors === 'string') {
-            authors = item.authors;
-          } else if (Array.isArray(item.authors)) {
-            authors = item.authors
-              .map(a => (typeof a === 'string' ? a : (a?.name || '')))
-              .filter(Boolean)
-              .join(', ') || 'Unknown Author';
-          }
-
-          return key ? { key, title, authors } : null;
-        })
-        .filter(Boolean); // Rimuove gli elementi senza chiave valida
+        .map(sanitizeBookEntry)
+        .filter(Boolean);
 
       if (sanitizedBooks.length === 0 && importedData.length > 0) {
         alert('No valid book entries found in the backup file.');
         return;
       }
 
-      localStorage.setItem(WISHLIST_KEY, JSON.stringify(sanitizedBooks));
+      saveBooks(sanitizedBooks);
       if (typeof onSuccess === 'function') onSuccess();
     } catch (err) {
       alert('Could not parse the backup file. Ensure it is a valid JSON file.');
@@ -192,21 +209,19 @@ export function isBookRead(bookOrKey) {
  * Toggles a book between read and unread status.
  */
 export function toggleReadBook(bookData) {
-  const targetKey = extractKey(bookData);
-  if (!targetKey) return false;
+  const normalized = sanitizeBookEntry(bookData);
+  if (!normalized) return false;
 
   const profile = getUserProfile();
   if (!profile.readBooks) profile.readBooks = [];
 
-  const existsIndex = profile.readBooks.findIndex(b => extractKey(b) === targetKey);
+  const existsIndex = profile.readBooks.findIndex(b => extractKey(b) === normalized.key);
 
   if (existsIndex > -1) {
     profile.readBooks.splice(existsIndex, 1);
   } else {
     profile.readBooks.push({
-      key: targetKey,
-      title: bookData.title || 'Untitled',
-      authors: bookData.authors || 'Unknown Author',
+      ...normalized,
       readAt: new Date().toISOString()
     });
   }

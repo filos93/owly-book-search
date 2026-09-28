@@ -123,12 +123,12 @@ export function isBookSaved(bookOrKey) {
 
 /**
  * Downloads the saved books as a JSON file.
+ * @throws {Error} If no saved books exist to export.
  */
 export function exportWishlist() {
   const savedBooks = getSavedBooks();
   if (savedBooks.length === 0) {
-    alert('No saved books to export!');
-    return;
+    throw new Error('No saved books to export!');
   }
 
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(savedBooks, null, 2));
@@ -143,38 +143,44 @@ export function exportWishlist() {
 export const exportWishlistJson = exportWishlist;
 
 /**
- * Imports books from a JSON backup file, validates schema & types into canonical shape.
+ * Imports books from a JSON backup file, validates schema into canonical shape.
  * @param {File} file 
- * @param {Function} onSuccess 
+ * @returns {Promise<Array>} Resolves with sanitized books on success or rejects with Error.
  */
-export function importWishlist(file, onSuccess) {
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    try {
-      const importedData = JSON.parse(event.target.result);
-
-      if (!Array.isArray(importedData)) {
-        alert('Invalid backup file format: Expected an array of books.');
-        return;
-      }
-
-      // Sanitize and validate every imported entry into { key, title, authors: string[] }
-      const sanitizedBooks = importedData
-        .map(sanitizeBookEntry)
-        .filter(Boolean);
-
-      if (sanitizedBooks.length === 0 && importedData.length > 0) {
-        alert('No valid book entries found in the backup file.');
-        return;
-      }
-
-      saveBooks(sanitizedBooks);
-      if (typeof onSuccess === 'function') onSuccess();
-    } catch (err) {
-      alert('Could not parse the backup file. Ensure it is a valid JSON file.');
+export function importWishlist(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      return reject(new Error('No file provided for import.'));
     }
-  };
-  reader.readAsText(file);
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      try {
+        const importedData = JSON.parse(event.target.result);
+
+        if (!Array.isArray(importedData)) {
+          return reject(new Error('Invalid backup file format: Expected a JSON array.'));
+        }
+
+        const sanitizedBooks = importedData
+          .map(sanitizeBookEntry)
+          .filter(Boolean);
+
+        if (sanitizedBooks.length === 0 && importedData.length > 0) {
+          return reject(new Error('No valid book entries found in the backup file.'));
+        }
+
+        saveBooks(sanitizedBooks);
+        resolve(sanitizedBooks);
+      } catch (err) {
+        reject(new Error('Could not parse backup file. Ensure it is a valid JSON file.'));
+      }
+    };
+
+    reader.onerror = () => reject(new Error('Failed to read backup file.'));
+    reader.readAsText(file);
+  });
 }
 
 // =============================================================================

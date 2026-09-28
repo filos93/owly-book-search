@@ -46,21 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Handle Export Click
+// Handle Export Click
   if (exportBtn) {
-    exportBtn.addEventListener('click', exportWishlistJson);
+    exportBtn.addEventListener('click', () => {
+      try {
+        exportWishlistJson();
+        setStatusMessage('Wishlist backup exported successfully!');
+      } catch (error) {
+        setStatusMessage(error.message);
+      }
+    });
   }
 
   // Handle Import File Selection
   if (importInput) {
-    importInput.addEventListener('change', (event) => {
+    importInput.addEventListener('change', async (event) => {
       const file = event.target.files[0];
-      if (file) {
-        importWishlist(file, () => {
-          renderWishlist();
-          updateWishlistBadge();
-          alert('Wishlist imported successfully!');
-        });
+      if (!file) return;
+
+      try {
+        await importWishlist(file);
+        renderWishlist();
+        updateWishlistBadge();
+        setStatusMessage('Wishlist imported successfully!');
+      } catch (error) {
+        setStatusMessage(error.message);
+      } finally {
+        importInput.value = '';
       }
     });
   }

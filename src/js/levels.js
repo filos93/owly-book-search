@@ -99,28 +99,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const isUnlocked = totalRead >= m.booksRequired;
     const li = document.createElement('li');
 
-    li.style.cssText = `
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: ${isUnlocked ? '#ffffff' : '#f8fafc'};
-      opacity: ${isUnlocked ? '1' : '0.65'};
-    `;
+    li.className = `level-card ${isUnlocked ? 'level-card--unlocked' : ''}`.trim();
 
-    li.innerHTML = `
-      <span style="font-size: 2rem;">${isUnlocked ? m.badge : '🔒'}</span>
-      <div style="flex-grow: 1;">
-        <h4 style="margin: 0 0 2px 0;">Level ${m.level}: ${m.title}</h4>
-        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">${m.desc}</p>
-      </div>
-      <span style="font-weight: 600; color: #31a2b8;">
-        ${isUnlocked ? '✓ Unlocked' : `${totalRead}/${m.booksRequired}`}
-      </span>
-    `;
+    // Badge
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = 'level-card__badge';
+    badgeSpan.textContent = isUnlocked ? m.badge : '🔒';
+
+    // Content
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'level-card__content';
+
+    const titleEl = document.createElement('h4');
+    titleEl.className = 'level-card__title';
+    titleEl.textContent = `Level ${m.level}: ${m.title}`;
+
+    const descEl = document.createElement('p');
+    descEl.className = 'level-card__desc';
+    descEl.textContent = m.desc;
+
+    contentDiv.appendChild(titleEl);
+    contentDiv.appendChild(descEl);
+
+    // Status
+    const statusSpan = document.createElement('span');
+    statusSpan.className = 'level-card__status';
+    statusSpan.textContent = isUnlocked ? '✓ Unlocked' : `${totalRead}/${m.booksRequired}`;
+
+    li.appendChild(badgeSpan);
+    li.appendChild(contentDiv);
+    li.appendChild(statusSpan);
 
     roadmapEl.appendChild(li);
   });

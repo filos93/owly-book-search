@@ -495,3 +495,60 @@ body {
 .close-btn:hover {
   color: var(--text-dark);
 }
+
+/* =============================================================================
+   LEVELS & MILESTONE ROADMAP STYLES
+   ============================================================================= */
+
+.level-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.level-card--current {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+}
+
+.level-card--locked {
+  opacity: 0.6;
+}
+
+.level-card__badge {
+  font-size: 2rem;
+}
+
+.level-card__content {
+  flex: 1;
+}
+
+.level-card__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.level-card__req {
+  margin: 2px 0 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.level-card__status {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.level-card__status--unlocked {
+  color: #16a34a;
+}
+
+.level-card__status--locked {
+  color: #94a3b8;
+}

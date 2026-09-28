@@ -83,20 +83,28 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
 
     const saved = isBookSaved(book.key);
 
-    li.innerHTML = `
-      <div>
-        <div class="book-title">${book.title}</div>
-        <div class="book-authors">${authors}</div>
-      </div>
-      <div class="card-actions">
-        <button class="save-btn ${saved ? 'saved' : ''}">
-          ${saved ? '★ Saved' : '☆ Save'}
-        </button>
-        <button class="details-btn">View Details</button>
-      </div>
-    `;
+    // Container per i dettagli del libro
+    const detailsContainer = document.createElement('div');
+    
+    const titleEl = document.createElement('div');
+    titleEl.className = 'book-title';
+    titleEl.textContent = book.title || 'Untitled';
 
-    const saveBtn = li.querySelector('.save-btn');
+    const authorsEl = document.createElement('div');
+    authorsEl.className = 'book-authors';
+    authorsEl.textContent = authors;
+
+    detailsContainer.appendChild(titleEl);
+    detailsContainer.appendChild(authorsEl);
+
+    // Container per le azioni/pulsanti
+    const actionsContainer = document.createElement('div');
+    actionsContainer.className = 'card-actions';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = `save-btn ${saved ? 'saved' : ''}`;
+    saveBtn.textContent = saved ? '★ Saved' : '☆ Save';
+
     saveBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const isNowSaved = toggleSaveBook({ key: book.key, title: book.title, authors });
@@ -105,11 +113,20 @@ export function renderBooksList(books, onBookClickCallback, append = false) {
       updateWishlistBadge();
     });
 
-    const detailsBtn = li.querySelector('.details-btn');
+    const detailsBtn = document.createElement('button');
+    detailsBtn.className = 'details-btn';
+    detailsBtn.textContent = 'View Details';
+
     detailsBtn.addEventListener('click', () => {
       onBookClickCallback(book.key, book.title, authors);
     });
 
+    actionsContainer.appendChild(saveBtn);
+    actionsContainer.appendChild(detailsBtn);
+
+    li.appendChild(detailsContainer);
+    li.appendChild(actionsContainer);
+    
     listEl.appendChild(li);
   });
 }

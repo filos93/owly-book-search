@@ -110,7 +110,7 @@ export function exportWishlist() {
 export const exportWishlistJson = exportWishlist;
 
 /**
- * Imports books from a JSON backup file and saves them to localStorage.
+ * Imports books from a JSON backup file, validates schema & types, and saves them safely.
  * @param {File} file 
  * @param {Function} onSuccess 
  */
@@ -118,15 +118,43 @@ export function importWishlist(file, onSuccess) {
   const reader = new FileReader();
   reader.onload = (event) => {
     try {
-      const importedBooks = JSON.parse(event.target.result);
-      if (Array.isArray(importedBooks)) {
-        localStorage.setItem(WISHLIST_KEY, JSON.stringify(importedBooks));
-        if (typeof onSuccess === 'function') onSuccess();
-      } else {
-        alert('Invalid backup file format.');
+      const importedData = JSON.parse(event.target.result);
+
+      if (!Array.isArray(importedData)) {
+        alert('Invalid backup file format: Expected an array of books.');
+        return;
       }
+
+      // Validazione formale dello schema di ogni libro per prevenire la persistenza di payload malevoli
+      const sanitizedBooks = importedData
+        .filter(item => item && typeof item === 'object')
+        .map(item => {
+          const key = typeof item.key === 'string' ? item.key : (typeof item.workKey === 'string' ? item.workKey : null);
+          const title = typeof item.title === 'string' ? item.title : 'Untitled';
+          let authors = 'Unknown Author';
+
+          if (typeof item.authors === 'string') {
+            authors = item.authors;
+          } else if (Array.isArray(item.authors)) {
+            authors = item.authors
+              .map(a => (typeof a === 'string' ? a : (a?.name || '')))
+              .filter(Boolean)
+              .join(', ') || 'Unknown Author';
+          }
+
+          return key ? { key, title, authors } : null;
+        })
+        .filter(Boolean); // Rimuove gli elementi senza chiave valida
+
+      if (sanitizedBooks.length === 0 && importedData.length > 0) {
+        alert('No valid book entries found in the backup file.');
+        return;
+      }
+
+      localStorage.setItem(WISHLIST_KEY, JSON.stringify(sanitizedBooks));
+      if (typeof onSuccess === 'function') onSuccess();
     } catch (err) {
-      alert('Could not parse the backup file.');
+      alert('Could not parse the backup file. Ensure it is a valid JSON file.');
     }
   };
   reader.readAsText(file);

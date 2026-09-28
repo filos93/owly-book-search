@@ -99,37 +99,41 @@ document.addEventListener('DOMContentLoaded', () => {
       // Check read status using key object or string
       const read = isBookRead(bookKey);
 
-      li.innerHTML = `
-        <div>
-          <div class="book-title ${read ? 'read-title' : ''}">
-            ${book.title} ${read ? '✓' : ''}
-          </div>
-          <div class="book-authors">${authorText}</div>
-        </div>
-        <div class="card-actions">
-          <button class="read-btn ${read ? 'completed' : ''}">
-            ${read ? '✓ Completed' : 'Mark as Read'}
-          </button>
-          <button class="remove-btn">Remove</button>
-          <button class="details-btn">View Details</button>
-        </div>
-      `;
+      // Info Container
+      const infoDiv = document.createElement('div');
 
-      // Read Toggle Handler inside renderWishlist loop
-      const readBtn = li.querySelector('.read-btn');
+      const titleDiv = document.createElement('div');
+      titleDiv.className = `book-title ${read ? 'read-title' : ''}`;
+      titleDiv.textContent = `${book.title || 'Untitled'} ${read ? '✓' : ''}`;
+
+      const authorDiv = document.createElement('div');
+      authorDiv.className = 'book-authors';
+      authorDiv.textContent = authorText;
+
+      infoDiv.appendChild(titleDiv);
+      infoDiv.appendChild(authorDiv);
+
+      // Actions Container
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'card-actions';
+
+      const readBtn = document.createElement('button');
+      readBtn.className = `read-btn ${read ? 'completed' : ''}`;
+      readBtn.textContent = read ? '✓ Completed' : 'Mark as Read';
+
       readBtn.addEventListener('click', () => {
-        const isNowCompleted = toggleReadBook({
-          key: book.key || book.workKey,
+        toggleReadBook({
+          key: bookKey,
           title: book.title,
           authors: book.authors
         });
-
-        // Re-render Wishlist UI immediately
         renderWishlist();
       });
 
-      // Remove from Wishlist handler
-      const removeBtn = li.querySelector('.remove-btn');
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = 'Remove';
+
       removeBtn.addEventListener('click', () => {
         toggleSaveBook({
           key: bookKey,
@@ -140,8 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWishlistBadge();
       });
 
-      // View Details handler
-      const detailsBtn = li.querySelector('.details-btn');
+      const detailsBtn = document.createElement('button');
+      detailsBtn.className = 'details-btn';
+      detailsBtn.textContent = 'View Details';
+
       detailsBtn.addEventListener('click', async () => {
         setStatusMessage('Loading description...');
         try {
@@ -152,6 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
           setStatusMessage(error.message || 'Failed to load details.');
         }
       });
+
+      actionsDiv.appendChild(readBtn);
+      actionsDiv.appendChild(removeBtn);
+      actionsDiv.appendChild(detailsBtn);
+
+      li.appendChild(infoDiv);
+      li.appendChild(actionsDiv);
 
       container.appendChild(li);
     });

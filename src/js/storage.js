@@ -11,16 +11,21 @@ const PROFILE_KEY = 'owly_user_profile';
 
 /**
  * Normalizes any book input or legacy storage record into the unified internal shape.
- * Shape: { key: string, title: string, authors: string[] }
+ * Shape: { key: string, title: string, authors: string[], savedAt: string }
  * @param {Object|string} bookOrKey 
  * @returns {Object|null}
  */
-function sanitizeBookEntry(bookOrKey) { // Need this when reading from localStorage or legacy data
+function sanitizeBookEntry(bookOrKey) {
   if (!bookOrKey) return null;
 
   // Handle bare string key lookup
   if (typeof bookOrKey === 'string') {
-    return { key: bookOrKey, title: 'Untitled', authors: ['Unknown Author'] };
+    return { 
+      key: bookOrKey, 
+      title: 'Untitled', 
+      authors: ['Unknown Author'],
+      savedAt: new Date(0).toISOString()
+    };
   }
 
   const key = bookOrKey.key || bookOrKey.workKey;
@@ -41,7 +46,10 @@ function sanitizeBookEntry(bookOrKey) { // Need this when reading from localStor
     authors = ['Unknown Author'];
   }
 
-  return { key, title, authors };
+  // Preserve existing timestamp or assign epoch 0 for legacy items
+  const savedAt = bookOrKey.savedAt || new Date(0).toISOString();
+
+  return { key, title, authors, savedAt };
 }
 
 /**
@@ -58,14 +66,22 @@ function extractKey(bookOrKey) {
 // =============================================================================
 
 /**
- * Retrieves saved books from localStorage, normalizing legacy items on read.
+ * Retrieves saved books from localStorage, normalized and sorted newest to oldest.
  * @returns {Array} Array of normalized book objects.
  */
 export function getSavedBooks() {
   try {
     const data = localStorage.getItem(WISHLIST_KEY);
     const books = data ? JSON.parse(data) : [];
-    return books.map(sanitizeBookEntry).filter(Boolean);
+    
+    const normalized = books.map(sanitizeBookEntry).filter(Boolean);
+
+    // Sort descending: newest timestamp first
+    return normalized.sort((a, b) => {
+      const timeA = new Date(a.savedAt).getTime();
+      const timeB = new Date(b.savedAt).getTime();
+      return timeB - timeA;
+    });
   } catch (err) {
     console.error('Error loading wishlist:', err);
     return [];
@@ -90,7 +106,11 @@ export function toggleSaveBook(book) {
   const normalized = sanitizeBookEntry(book);
   if (!normalized) return false;
 
-  const saved = getSavedBooks();
+  // Read raw storage array without sorting
+  const data = localStorage.getItem(WISHLIST_KEY);
+  const raw = data ? JSON.parse(data) : [];
+  const saved = raw.map(sanitizeBookEntry).filter(Boolean);
+
   const index = saved.findIndex(b => b.key === normalized.key);
 
   if (index > -1) {
@@ -98,7 +118,11 @@ export function toggleSaveBook(book) {
     saveBooks(saved);
     return false; // Removed
   } else {
-    saved.push(normalized);
+    // Add current ISO timestamp on save
+    saved.push({
+      ...normalized,
+      savedAt: new Date().toISOString()
+    });
     saveBooks(saved);
     return true; // Added
   }

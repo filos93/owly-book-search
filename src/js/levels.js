@@ -17,6 +17,37 @@ const MILESTONES = [
 ];
 
 // =============================================================================
+// FORMATTING HELPERS
+// =============================================================================
+
+/**
+ * Removes non-ASCII glyphs for Roboto PDF rendering while preserving Latin names.
+ */
+function cleanText(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/[^\x20-\x7E]/g, '') // Strip unsupported non-Latin characters
+    .trim();
+}
+
+/**
+ * Cleans author list and prevents leading commas when foreign names are stripped.
+ */
+function formatAuthors(authors) {
+  if (!Array.isArray(authors) || authors.length === 0) return 'Unknown Author';
+
+  // Clean each author name and keep only those with readable Latin text
+  const validAuthors = authors
+    .map(cleanText)
+    .filter(Boolean);
+
+  if (validAuthors.length === 0) return 'Unknown Author';
+  if (validAuthors.length <= 2) return validAuthors.join(', ');
+
+  return `${validAuthors.slice(0, 2).join(', ')} et al.`;
+}
+
+// =============================================================================
 // DOM INITIALIZATION & EVENT LISTENERS
 // =============================================================================
 
@@ -26,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const profile = getUserProfile();
   const rawBooks = profile.readBooks || [];
 
-  // Deduplicate completed books (already normalized by storage.js)
+  // Deduplicate completed books
   const uniqueBooksMap = new Map();
   rawBooks.forEach(book => {
     if (book.key && !uniqueBooksMap.has(book.key)) {
@@ -104,27 +135,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     li.className = `level-card ${isUnlocked ? 'level-card--unlocked' : ''}`.trim();
 
-    // Badge
     const badgeSpan = document.createElement('span');
     badgeSpan.className = 'level-card__badge';
     badgeSpan.textContent = isUnlocked ? m.badge : '🔒';
 
-    // Content
     const contentDiv = document.createElement('div');
     contentDiv.className = 'level-card__content';
 
-    const titleEl = document.createElement('h4');
-    titleEl.className = 'level-card__title';
-    titleEl.textContent = `Level ${m.level}: ${m.title}`;
+    const cardTitle = document.createElement('h4');
+    cardTitle.className = 'level-card__title';
+    cardTitle.textContent = `Level ${m.level}: ${m.title}`;
 
     const descEl = document.createElement('p');
     descEl.className = 'level-card__desc';
     descEl.textContent = m.desc;
 
-    contentDiv.appendChild(titleEl);
+    contentDiv.appendChild(cardTitle);
     contentDiv.appendChild(descEl);
 
-    // Status
     const statusSpan = document.createElement('span');
     statusSpan.className = 'level-card__status';
     statusSpan.textContent = isUnlocked ? '✓ Unlocked' : `${totalRead}/${m.booksRequired}`;
@@ -138,11 +166,34 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =============================================================================
-// IMAGE & ASSET HELPERS
+// ASSET & FONT HELPERS
 // =============================================================================
 
 /**
- * Helper to convert and clean up an image from public/ into a transparent Base64 string.
+ * Loads Roboto font into jsPDF dynamically from CDN.
+ */
+async function loadUnicodeFont(doc) {
+  try {
+    const response = await fetch('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf');
+    const buffer = await response.arrayBuffer();
+    
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+
+    doc.addFileToVFS('Roboto-Regular.ttf', btoa(binary));
+    doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+    doc.setFont('Roboto');
+  } catch (err) {
+    console.warn('Could not load Roboto font, falling back to Helvetica:', err);
+    doc.setFont('helvetica');
+  }
+}
+
+/**
+ * Converts image path to Base64 data URL.
  */
 async function getImageDataUrl(url) {
   return new Promise((resolve) => {
@@ -168,12 +219,6 @@ async function getImageDataUrl(url) {
 // PDF CERTIFICATE GENERATOR
 // =============================================================================
 
-/**
- * Generates a PDF certificate with an accurately scaled, high-res logo.
- * @param {Object} milestone 
- * @param {number} count 
- * @param {Array} books 
- */
 async function generateCertificate(milestone, count, books) {
   const doc = new jsPDF({
     orientation: 'landscape',
@@ -181,20 +226,22 @@ async function generateCertificate(milestone, count, books) {
     format: 'a4'
   });
 
+  await loadUnicodeFont(doc);
+
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
   // Decorative Borders
   doc.setLineWidth(2);
-  doc.setDrawColor(49, 162, 184); // Owly cyan
+  doc.setDrawColor(49, 162, 184);
   doc.rect(8, 8, pageWidth - 16, pageHeight - 16);
 
   doc.setLineWidth(0.5);
   doc.setDrawColor(203, 213, 225);
   doc.rect(10.5, 10.5, pageWidth - 21, pageHeight - 21);
 
-  // Load Logo with True Aspect Ratio Scaling
-  const logoInfo = await getImageDataUrl('/img/logo.png');
+  // Load Logo
+  const logoInfo = await getImageDataUrl('./img/logo.png');
   let startY = 36;
 
   if (logoInfo) {
@@ -207,25 +254,21 @@ async function generateCertificate(milestone, count, books) {
   }
 
   // Header Title
-  doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.setTextColor(30, 41, 59);
   doc.text('OWLY READING CERTIFICATE', pageWidth / 2, startY, { align: 'center' });
 
   // Subtitle / Milestone Rank
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'normal');
   doc.setTextColor(100, 116, 139);
   doc.text('This certifies reading milestone achievement:', pageWidth / 2, startY + 10, { align: 'center' });
 
-  doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
   doc.setTextColor(49, 162, 184);
   doc.text(`${milestone.title} (Level ${milestone.level})`, pageWidth / 2, startY + 22, { align: 'center' });
 
   // Summary Stat
   doc.setFontSize(13);
-  doc.setFont('helvetica', 'italic');
   doc.setTextColor(71, 85, 105);
   doc.text(`Total Books Completed: ${count}`, pageWidth / 2, startY + 31, { align: 'center' });
 
@@ -235,12 +278,10 @@ async function generateCertificate(milestone, count, books) {
   doc.line(30, lineY, pageWidth - 30, lineY);
 
   // Completed Books List
-  doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(30, 41, 59);
   doc.text('Completed Reading Log:', 30, lineY + 10);
 
-  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9.5);
   doc.setTextColor(71, 85, 105);
 
@@ -250,8 +291,15 @@ async function generateCertificate(milestone, count, books) {
   } else {
     const displayList = books.slice(0, 10);
     displayList.forEach((book, index) => {
-      const authors = book.authors.join(', ');
-      doc.text(`${index + 1}. "${book.title}" — ${authors}`, 35, yPosition);
+      const cleanedTitle = cleanText(book.title);
+      const title = cleanedTitle 
+        ? (cleanedTitle.length > 50 ? cleanedTitle.substring(0, 47) + '...' : cleanedTitle)
+        : 'Untitled Work';
+        
+      const authors = formatAuthors(book.authors);
+
+      const lineText = `${index + 1}. "${title}" — ${authors}`;
+      doc.text(lineText, 35, yPosition);
       yPosition += 6;
     });
 
@@ -267,6 +315,6 @@ async function generateCertificate(milestone, count, books) {
   doc.text(`Issued on: ${today}`, 30, pageHeight - 16);
   doc.text('Verified by Owly App', pageWidth - 30, pageHeight - 16, { align: 'right' });
 
-  // 6. Download PDF
+  // Download PDF
   doc.save(`Owly-Certificate-Level-${milestone.level}.pdf`);
 }

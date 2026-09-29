@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-// Handle Export Click
+  // Handle Export Click
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       try {
@@ -58,23 +58,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Handle Import File Selection
+  // Handle Import File Selection via Custom Modal
   if (importInput) {
-    importInput.addEventListener('change', async (event) => {
+    const importModal = document.getElementById('import-modal');
+    const mergeBtn = document.getElementById('import-merge-btn');
+    const overwriteBtn = document.getElementById('import-overwrite-btn');
+    const cancelBtn = document.getElementById('import-cancel-btn');
+
+    let pendingFile = null;
+
+    // 1. Open modal when file is selected
+    importInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
+      pendingFile = file;
+      if (importModal) importModal.style.display = 'flex';
+    });
+
+    // Helper to process the import action
+    const processImport = async (shouldMerge) => {
+      if (importModal) importModal.style.display = 'none';
+      if (!pendingFile) return;
+
       try {
-        await importWishlist(file);
+        await importWishlist(pendingFile, { merge: shouldMerge });
         renderWishlist();
         updateWishlistBadge();
-        setStatusMessage('Wishlist imported successfully!');
+        setStatusMessage(`Wishlist ${shouldMerge ? 'merged' : 'replaced'} successfully!`);
       } catch (error) {
         setStatusMessage(error.message);
       } finally {
+        pendingFile = null;
         importInput.value = '';
       }
-    });
+    };
+
+    // 2. Modal button event listeners
+    if (mergeBtn) mergeBtn.onclick = () => processImport(true);
+    if (overwriteBtn) overwriteBtn.onclick = () => processImport(false);
+    if (cancelBtn) {
+      cancelBtn.onclick = () => {
+        if (importModal) importModal.style.display = 'none';
+        pendingFile = null;
+        importInput.value = '';
+      };
+    }
   }
 
   renderWishlist();

@@ -167,11 +167,15 @@ export function exportWishlist() {
 export const exportWishlistJson = exportWishlist;
 
 /**
- * Imports books from a JSON backup file, validates schema into canonical shape.
+ * Imports books from a JSON backup file, validates schema into canonical shape,
+ * and merges with existing localStorage data by default.
+ * 
  * @param {File} file 
- * @returns {Promise<Array>} Resolves with sanitized books on success or rejects with Error.
+ * @param {Object} [options] 
+ * @param {boolean} [options.merge=true] - If true, merges with existing list. If false, overwrites.
+ * @returns {Promise<Array>} Resolves with final updated books array or rejects with Error.
  */
-export function importWishlist(file) {
+export function importWishlist(file, { merge = true } = {}) {
   return new Promise((resolve, reject) => {
     if (!file) {
       return reject(new Error('No file provided for import.'));
@@ -187,16 +191,38 @@ export function importWishlist(file) {
           return reject(new Error('Invalid backup file format: Expected a JSON array.'));
         }
 
-        const sanitizedBooks = importedData
+        const sanitizedImported = importedData
           .map(sanitizeBookEntry)
           .filter(Boolean);
 
-        if (sanitizedBooks.length === 0 && importedData.length > 0) {
+        if (sanitizedImported.length === 0 && importedData.length > 0) {
           return reject(new Error('No valid book entries found in the backup file.'));
         }
 
-        saveBooks(sanitizedBooks);
-        resolve(sanitizedBooks);
+        let finalBooks = [];
+
+        if (merge) {
+          // Get current saved books (unfiltered raw or getSavedBooks)
+          const existingBooks = getSavedBooks();
+          const bookMap = new Map();
+
+          // 1. Load existing saved books first
+          existingBooks.forEach((book) => {
+            if (book && book.key) bookMap.set(book.key, book);
+          });
+
+          // 2. Overlay imported books (updates duplicates, adds new ones)
+          sanitizedImported.forEach((book) => {
+            if (book && book.key) bookMap.set(book.key, book);
+          });
+
+          finalBooks = Array.from(bookMap.values());
+        } else {
+          finalBooks = sanitizedImported;
+        }
+
+        saveBooks(finalBooks);
+        resolve(finalBooks);
       } catch (err) {
         reject(new Error('Could not parse backup file. Ensure it is a valid JSON file.'));
       }

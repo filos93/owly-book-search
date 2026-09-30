@@ -68,7 +68,7 @@ body {
   font-weight: 600;
   font-size: 1rem;
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 12px;
   transition: background-color 0.2s ease;
 }
 
@@ -85,7 +85,7 @@ body {
   margin: 3rem auto;
   padding: 2.5rem;
   background-color: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(4px);
 }
@@ -101,7 +101,7 @@ body {
   color: white;
   padding: 10px 16px;
   max-width: 200px;
-  border-radius: 20px;
+  border-radius: 12px;
   font-weight: bold;
   text-decoration: none;
   font-size: 0.875rem;
@@ -150,7 +150,7 @@ body {
   padding: 14px 20px;
   font-size: 1rem;
   border: 2px solid #e2e8f0;
-  border-radius: 30px;
+  border-radius: 12px;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -167,7 +167,7 @@ body {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -216,7 +216,7 @@ body {
 .chip-btn {
   background: #ffffff;
   border: 1px solid #cbd5e1;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 0.4rem 0.85rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -310,7 +310,7 @@ body {
   padding: 0 1rem;
   font-size: 0.875rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap; /* Forces text onto a single line */
@@ -401,7 +401,7 @@ body {
   padding: 12px 28px;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 25px;
+  border-radius: 12px;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -552,7 +552,7 @@ body {
   padding: 10px 16px;
   font-size: 0.9rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -602,7 +602,7 @@ body {
   gap: 1rem;
   padding: 1rem;
   margin-bottom: 0.75rem;
-  border-radius: 8px;
+  border-radius: 12px;
   background-color: #f8fafc;
   border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
@@ -700,7 +700,7 @@ body {
     font-size: 0.85rem;
     font-weight: 600;
     white-space: nowrap;
-    border-radius: 20px;
+    border-radius: 12px;
     background-color: rgba(255, 255, 255, 0.15); /* Subtle pill background */
     color: #ffffff;
     text-decoration: none;
@@ -777,5 +777,6 @@ body {
     height: 36px;
     padding: 0 0.75rem;
     font-size: 0.825rem;
+    border-radius: 12px;
   }
 }

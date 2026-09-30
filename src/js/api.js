@@ -50,35 +50,69 @@ function normalizeBook(rawBook) {
 
 /**
  * Searches books by category with pagination support and optional cancellation signal.
- * @param {string} category 
+ * Features automatic boundary punctuation trimming and safe URL path encoding.
+ * 
+ * @param {string} category - Category or subject term to search
  * @param {number} limit - Number of items per request (default: 30)
  * @param {number} offset - Number of items to skip for pagination (default: 0)
  * @param {Object} [options] - Additional request options (e.g. { signal })
- * @returns {Promise<Array>} Normalized array of books
+ * @returns {Promise<{books: Array, searchedCategory: string}>} Normalized books and cleaned search term
  */
 export async function searchBooksByCategory(category, limit = 30, offset = 0, options = {}) {
   if (!category || !category.trim()) {
     throw new Error('Please enter a valid search category.');
   }
 
-  const formattedCategory = category.trim().toLowerCase().replace(/\s+/g, '_');
+  // Clean boundary symbols only, preserving unicode letters like 'à' (\p{L} = letters, \p{N} = numbers)
+  const cleanedCategory = category
+    .trim()
+    .toLowerCase()
+    .replace(/^[^\p{L}\p{N}\s]+|[^\p{L}\p{N}\s]+$/gu, '')
+    .replace(/\s+/g, '_');
 
+  if (!cleanedCategory) {
+    return { books: [], searchedCategory: category.trim() };
+  }
+
+  // Perform exact query safely (e.g. "sciencà" -> /subjects/scienc%C3%A0.json)
+  const books = await fetchSubject(cleanedCategory, limit, offset, options);
+
+  return {
+    books,
+    searchedCategory: cleanedCategory.replace(/_/g, ' ')
+  };
+}
+
+/**
+ * Internal helper to execute the Open Library subject endpoint request safely.
+ */
+async function fetchSubject(formattedCategory, limit, offset, options) {
   try {
+    const encodedCategory = encodeURIComponent(formattedCategory);
+    
     const response = await apiClient.get(
-      `/subjects/${formattedCategory}.json?limit=${limit}&offset=${offset}`,
-      options
+      `/subjects/${encodedCategory}.json`,
+      {
+        params: { limit, offset },
+        ...options
+      }
     );
 
     if (!response.data || !Array.isArray(response.data.works)) {
       return [];
     }
 
-    // MAP AND NORMALIZE incoming items right at the boundary
     return response.data.works.map(normalizeBook).filter(Boolean);
   } catch (error) {
     if (axios.isCancel(error) || error.name === 'AbortError') {
       throw error;
     }
+
+    // Treat 404 as an empty list to indicate no results found
+    if (error.response && error.response.status === 404) {
+      return [];
+    }
+
     console.error('API Search Error:', error);
     if (error.code === 'ECONNABORTED') {
       throw new Error('Request timed out. Please check your internet connection.');

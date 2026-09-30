@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const LIMIT = 30;
   let currentOffset = 0;
   let currentCategory = '';
+  let displayCategory = ''; // Stores the cleaned/normalized category returned by the API
   let totalLoaded = 0;
   let isLoading = false;
   let activeSearchController = null; // AbortController for stopping ongoing fetch requests
@@ -87,9 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
    * Fresh Search Handler
    */
   async function handleSearch() {
-    const category = categoryInput ? categoryInput.value.trim() : '';
+    const rawInput = categoryInput ? categoryInput.value.trim() : '';
 
-    if (!category) {
+    if (!rawInput) {
       setStatusMessage('Please enter a category name (e.g. science, history, fantasy).');
       return;
     }
@@ -101,30 +102,33 @@ document.addEventListener('DOMContentLoaded', () => {
     activeSearchController = new AbortController();
 
     // Reset pagination state
-    currentCategory = category;
+    currentCategory = rawInput;
     currentOffset = 0;
     totalLoaded = 0;
     isLoading = true;
 
     renderBooksList([], null, false);
     toggleLoadMoreButton(false);
-    setStatusMessage(`Searching for "${category}" books, please wait...`);
+    setStatusMessage(`Searching for "${rawInput}" books, please wait...`);
 
     try {
-      const books = await searchBooksByCategory(
+      // Destructure response to get books array and the actual cleaned category
+      const { books, searchedCategory } = await searchBooksByCategory(
         currentCategory, 
         LIMIT, 
         currentOffset, 
         { signal: activeSearchController.signal }
       );
 
+      displayCategory = searchedCategory || rawInput;
+
       if (!books || books.length === 0) {
-        setStatusMessage(`No books found for "${category}". Try another category!`);
+        setStatusMessage(`No books found for "${displayCategory}". Check your spelling or try another category!`);
         return;
       }
 
       totalLoaded += books.length;
-      setStatusMessage(`Showing ${totalLoaded} books in "${category}":`);
+      setStatusMessage(`Showing ${totalLoaded} books in "${displayCategory}":`);
       renderBooksList(books, handleViewDetails, false);
 
       toggleLoadMoreButton(books.length === LIMIT);
@@ -155,11 +159,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const nextOffset = currentOffset + LIMIT;
-    setStatusMessage(`Loading more "${currentCategory}" books...`);
+    setStatusMessage(`Loading more "${displayCategory}" books...`);
 
     try {
-      // Abort any ongoing search request before starting a new one
-      const newBooks = await searchBooksByCategory(
+      const { books: newBooks } = await searchBooksByCategory(
         currentCategory, 
         LIMIT, 
         nextOffset, 
@@ -167,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (!newBooks || newBooks.length === 0) {
-        setStatusMessage(`All available books for "${currentCategory}" have been loaded.`);
+        setStatusMessage(`All available books for "${displayCategory}" have been loaded.`);
         toggleLoadMoreButton(false);
         return;
       }
@@ -176,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentOffset = nextOffset;
       totalLoaded += newBooks.length;
 
-      setStatusMessage(`Showing ${totalLoaded} books in "${currentCategory}":`);
+      setStatusMessage(`Showing ${totalLoaded} books in "${displayCategory}":`);
       renderBooksList(newBooks, handleViewDetails, true);
 
       toggleLoadMoreButton(newBooks.length === LIMIT);

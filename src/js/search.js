@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Load more failed:', error);
       setStatusMessage('Could not load more books. Please try again.');
     } finally {
-      // reset loading state and re-enable the button regardless of success or failure
+      // reset loading state and re-enable the button only if button is still visible/needed
       isLoading = false;
-      if (loadMoreBtn) {
+      if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
         loadMoreBtn.disabled = false;
         loadMoreBtn.textContent = 'Load More Books';
       }

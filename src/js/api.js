@@ -15,26 +15,37 @@ const apiClient = axios.create({
 
 /**
  * Transforms raw Open Library work objects into a standardized internal shape.
+ * Shape: { key: string, title: string, authors: string[] }
+ * 
  * @param {Object} rawBook 
- * @returns {Object|null} Normalized book object { key, title, authors }
+ * @returns {Object|null} Normalized book object or null if invalid
  */
-function normalizeBook(rawBook) {
-  if (!rawBook) return null;
+export function normalizeBook(rawBook) {
+  if (!rawBook || typeof rawBook !== 'object') return null;
 
-  // Standardize key
-  const key = rawBook.key || rawBook.workKey || '';
+  // 1. Standardize key (check key or workKey)
+  const rawKey = rawBook.key || rawBook.workKey;
+  const key = typeof rawKey === 'string' ? rawKey.trim() : '';
+  
+  // Scarta il libro se non ha un'ID/chiave univoca
+  if (!key) return null;
 
-  // Standardize title
-  const title = rawBook.title || 'Untitled Book';
+  // 2. Standardize title
+  const title = typeof rawBook.title === 'string' && rawBook.title.trim()
+    ? rawBook.title.trim()
+    : 'Untitled Book';
 
-  // Standardize authors into an array of strings
+  // 3. Standardize authors into an array of strings
+  // Gestisce sia `author_name` (Search API) sia `authors` (Works API)
+  const rawAuthors = rawBook.authors || rawBook.author_name;
   let authors = [];
-  if (Array.isArray(rawBook.authors)) {
-    authors = rawBook.authors
-      .map(a => (typeof a === 'string' ? a : a?.name))
+
+  if (Array.isArray(rawAuthors)) {
+    authors = rawAuthors
+      .map(a => (typeof a === 'string' ? a.trim() : a?.name?.trim()))
       .filter(Boolean);
-  } else if (typeof rawBook.authors === 'string' && rawBook.authors.trim()) {
-    authors = [rawBook.authors.trim()];
+  } else if (typeof rawAuthors === 'string' && rawAuthors.trim()) {
+    authors = rawAuthors.split(',').map(a => a.trim()).filter(Boolean);
   }
 
   if (authors.length === 0) {

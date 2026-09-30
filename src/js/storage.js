@@ -20,23 +20,31 @@ function sanitizeBookEntry(bookOrKey) {
 
   // Handle bare string key lookup
   if (typeof bookOrKey === 'string') {
+    const trimmedKey = bookOrKey.trim();
+    if (!trimmedKey) return null;
     return { 
-      key: bookOrKey, 
+      key: trimmedKey, 
       title: 'Untitled', 
       authors: ['Unknown Author'],
       savedAt: new Date(0).toISOString()
     };
   }
 
-  const key = bookOrKey.key || bookOrKey.workKey;
+  // Ensure key is a valid non-empty string
+  const rawKey = bookOrKey.key || bookOrKey.workKey;
+  const key = typeof rawKey === 'string' ? rawKey.trim() : (typeof rawKey === 'number' ? String(rawKey) : '');
   if (!key) return null;
 
-  const title = typeof bookOrKey.title === 'string' ? bookOrKey.title : 'Untitled';
+  // Ensure title is a string
+  const title = typeof bookOrKey.title === 'string' && bookOrKey.title.trim() 
+    ? bookOrKey.title.trim() 
+    : 'Untitled';
 
+  // Parse and normalize authors array
   let authors = ['Unknown Author'];
   if (Array.isArray(bookOrKey.authors)) {
     authors = bookOrKey.authors
-      .map(a => (typeof a === 'string' ? a : a?.name))
+      .map(a => (typeof a === 'string' ? a.trim() : a?.name?.trim()))
       .filter(Boolean);
   } else if (typeof bookOrKey.authors === 'string' && bookOrKey.authors.trim()) {
     authors = bookOrKey.authors.split(',').map(a => a.trim()).filter(Boolean);
@@ -46,8 +54,10 @@ function sanitizeBookEntry(bookOrKey) {
     authors = ['Unknown Author'];
   }
 
-  // Preserve existing timestamp or assign epoch 0 for legacy items
-  const savedAt = bookOrKey.savedAt || new Date(0).toISOString();
+  // Preserve existing timestamp, fallback to ISO now or epoch 0
+  const savedAt = typeof bookOrKey.savedAt === 'string' 
+    ? bookOrKey.savedAt 
+    : new Date(0).toISOString();
 
   return { key, title, authors, savedAt };
 }
@@ -57,8 +67,9 @@ function sanitizeBookEntry(bookOrKey) {
  */
 function extractKey(bookOrKey) {
   if (!bookOrKey) return null;
-  if (typeof bookOrKey === 'string') return bookOrKey;
-  return bookOrKey.key || bookOrKey.workKey || null;
+  if (typeof bookOrKey === 'string') return bookOrKey.trim() || null;
+  const key = bookOrKey.key || bookOrKey.workKey;
+  return typeof key === 'string' ? key.trim() : null;
 }
 
 // =============================================================================
@@ -146,22 +157,37 @@ export function isBookSaved(bookOrKey) {
 // =============================================================================
 
 /**
- * Downloads the saved books as a JSON file.
+ * Downloads the saved books as a JSON backup file.
+ * Uses Blobs for memory efficiency and supports metadata wrapping.
+ * 
  * @throws {Error} If no saved books exist to export.
  */
 export function exportWishlist() {
   const savedBooks = getSavedBooks();
-  if (savedBooks.length === 0) {
+  if (!savedBooks || savedBooks.length === 0) {
     throw new Error('No saved books to export!');
   }
 
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(savedBooks, null, 2));
+  // Backup wrapper con metadati (perfettamente compatibile con la tua importWishlist)
+  const backupData = {
+    exportedAt: new Date().toISOString(),
+    books: savedBooks
+  };
+
+  const jsonString = JSON.stringify(backupData, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
   const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", "owly-wishlist-backup.json");
+  downloadAnchor.href = url;
+  downloadAnchor.download = 'owly-wishlist-backup.json';
+  
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
+  
+  // Cleanup per evitare memory leak
   downloadAnchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 export const exportWishlistJson = exportWishlist;
@@ -185,10 +211,14 @@ export function importWishlist(file, { merge = true } = {}) {
 
     reader.onload = (event) => {
       try {
-        const importedData = JSON.parse(event.target.result);
+        const rawJson = JSON.parse(event.target.result);
 
-        if (!Array.isArray(importedData)) {
-          return reject(new Error('Invalid backup file format: Expected a JSON array.'));
+        const importedData = Array.isArray(rawJson) 
+          ? rawJson 
+          : (rawJson && Array.isArray(rawJson.books) ? rawJson.books : null);
+
+        if (!importedData) {
+          return reject(new Error('Invalid backup file format: Expected a JSON array or a valid backup object with "books".'));
         }
 
         const sanitizedImported = importedData
@@ -202,16 +232,13 @@ export function importWishlist(file, { merge = true } = {}) {
         let finalBooks = [];
 
         if (merge) {
-          // Get current saved books (unfiltered raw or getSavedBooks)
           const existingBooks = getSavedBooks();
           const bookMap = new Map();
 
-          // 1. Load existing saved books first
           existingBooks.forEach((book) => {
             if (book && book.key) bookMap.set(book.key, book);
           });
 
-          // 2. Overlay imported books (updates duplicates, adds new ones)
           sanitizedImported.forEach((book) => {
             if (book && book.key) bookMap.set(book.key, book);
           });

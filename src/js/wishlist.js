@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let pendingFile = null;
 
-    // 1. Open modal when file is selected
+    // Open modal when file is selected
     importInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    // 2. Modal button event listeners
+    // Modal button event listeners
     if (mergeBtn) mergeBtn.onclick = () => processImport(true);
     if (overwriteBtn) overwriteBtn.onclick = () => processImport(false);
     if (cancelBtn) {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderWishlist() {
     if (!container) return;
     const books = getSavedBooks();
-    container.innerHTML = '';
+    container.innerHTML = ''; // emptying container from old elements, is safe!
 
     if (!books || books.length === 0) {
       setStatusMessage('Your wishlist is empty. Explore categories to save books!');
